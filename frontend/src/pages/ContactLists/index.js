@@ -86,7 +86,17 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     overflowY: "scroll",
     ...theme.scrollbarStyles,
+    borderRadius:'16px',
   },
+  traco: {
+    height: '2px',
+    width: '99%',
+    backgroundColor: '#0C2454',
+    marginLeft: '0px',
+  },
+  listacont: {
+    padding: '16px'
+  }
 }));
 
 const ContactLists = () => {
@@ -217,7 +227,14 @@ const ContactLists = () => {
         aria-labelledby="form-dialog-title"
         contactListId={selectedContactList && selectedContactList.id}
       />
-      <MainHeader>
+
+      <Paper
+        className={classes.mainPaper}
+        variant="outlined"
+        onScroll={handleScroll}
+      >
+        <div className={classes.listacont}>
+              <MainHeader>
         <Grid style={{ width: "99.6%" }} container>
           <Grid xs={12} sm={8} item>
             <Title>{i18n.t("contactLists.title")}</Title>
@@ -225,19 +242,38 @@ const ContactLists = () => {
           <Grid xs={12} sm={4} item>
             <Grid spacing={2} container>
               <Grid xs={7} sm={6} item>
-                <TextField
-                  fullWidth
-                  placeholder={i18n.t("contacts.searchPlaceholder")}
-                  type="search"
-                  value={searchParam}
-                  onChange={handleSearch}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SearchIcon style={{ color: "gray" }} />
-                      </InputAdornment>
-                    ),
-                  }}
+              <TextField
+            placeholder='Pesquisar Contatos'
+            type="search"
+            value={searchParam}
+            onChange={handleSearch}
+            InputProps={{
+              disableUnderline: true, // remove a linha
+              style: {
+                color: '#0C2454',// cor do texto normal
+                fontWeight: 'bold', // texto em negrito
+                backgroundColor: "#D9D9D9",
+                borderRadius: '8px',
+                height: "36.5px",
+              },
+              inputProps: {
+                style: {
+                  paddingLeft: '8px',
+                  '&::placeholder': {
+                    color: '#0C2454',
+                    fontWeight: 'bold',
+                    Opacity: 1, // cor do placeholder
+                    paddingLeft: "10px"
+                  
+                  },
+                },
+              },
+              endAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon style={{ color: '#0C2454' }} />
+                </InputAdornment>
+              ),
+            }}
                 />
               </Grid>
               <Grid xs={5} sm={6} item>
@@ -254,12 +290,8 @@ const ContactLists = () => {
           </Grid>
         </Grid>
       </MainHeader>
-      <Paper
-        className={classes.mainPaper}
-        variant="outlined"
-        onScroll={handleScroll}
-      >
-        <Table size="small">
+      <div className={classes.traco}></div>
+        <Table size="small" style={{ borderCollapse: 'separate', borderSpacing: '0 20px' }}> 
           <TableHead>
             <TableRow>
               <TableCell align="center">
@@ -273,17 +305,17 @@ const ContactLists = () => {
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody style={{backgroundColor: "#D9D9D9"}}>
             <>
               {contactLists.map((contactList) => (
                 <TableRow key={contactList.id}>
-                  <TableCell align="center">{contactList.name}</TableCell>
-                  <TableCell align="center">
+                  <TableCell align="center" style={{ borderRadius: '8px 0 0 8px', overflow: 'hidden',color:'#0C2454', fontWeight:"bold" }}>{contactList.name}</TableCell>
+                  <TableCell align="center" style={{ overflow: 'hidden',color:'#0C2454', fontWeight:"bold" }}>
                     {contactList.contactsCount || 0}
                   </TableCell>
-                  <TableCell align="center">
+                  <TableCell align="center" style={{ borderRadius: '0 8px 8px 0',overflow: 'hidden',color:'#0C2454', fontWeight:"bold" }}>
                     <a href={planilhaExemplo} download="planilha.xlsx">
-                      <IconButton size="small" title="Baixar Planilha Exemplo">
+                      <IconButton size="small" title="Baixar Planilha Exemplo" style={{color:'#0C2454'}}>
                         <DownloadIcon />
                       </IconButton>
                     </a>
@@ -291,6 +323,7 @@ const ContactLists = () => {
                     <IconButton
                       size="small"
                       onClick={() => goToContacts(contactList.id)}
+                      style={{color:'#0C2454'}}
                     >
                       <PeopleIcon />
                     </IconButton>
@@ -298,6 +331,7 @@ const ContactLists = () => {
                     <IconButton
                       size="small"
                       onClick={() => handleEditContactList(contactList)}
+                      style={{color:'#0C2454'}}
                     >
                       <EditIcon />
                     </IconButton>
@@ -308,6 +342,7 @@ const ContactLists = () => {
                         setConfirmModalOpen(true);
                         setDeletingContactList(contactList);
                       }}
+                      style={{color:'red'}}
                     >
                       <DeleteOutlineIcon />
                     </IconButton>
@@ -318,6 +353,7 @@ const ContactLists = () => {
             </>
           </TableBody>
         </Table>
+        </div>
       </Paper>
     </MainContainer>
   );

@@ -24,16 +24,31 @@ import OnlyForSuperUser from "../../components/OnlyForSuperUser";
 const useStyles = makeStyles((theme) => ({
   root: {
     flex: 1,
-    backgroundColor: theme.palette.background.paper,
+    backgroundColor: 'transparent',
   },
   mainPaper: {
     ...theme.scrollbarStyles,
     overflowY: "scroll",
     flex: 1,
+    borderRadius:'16px',
   },
   tab: {
     backgroundColor: theme.palette.options,
-    borderRadius: 4,
+    border: `1px solid #0C2454`, // Borda em todos os tabs
+    flexGrow: 1,
+    fontSize: '1.2rem',
+    '&.Mui-selected': {
+      backgroundColor: '#0C2454',
+      color: 'white',
+    },
+    '&:first-child': {
+      borderTopLeftRadius: 4, // Bordas arredondadas apenas no canto superior esquerdo
+      borderBottomLeftRadius: 4, // Bordas arredondadas na parte inferior esquerda
+    },
+    '&:last-child': {
+      borderTopRightRadius: 4, // Bordas arredondadas apenas no canto superior direito
+      borderBottomRightRadius: 4, // Bordas arredondadas na parte inferior direita
+    },
   },
   paper: {
     ...theme.scrollbarStyles,
@@ -42,10 +57,12 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     width: "100%",
+    borderRadius:'16px',
   },
   container: {
     width: "100%",
     maxHeight: "100%",
+    
   },
   control: {
     padding: theme.spacing(1),
@@ -53,6 +70,19 @@ const useStyles = makeStyles((theme) => ({
   textfield: {
     width: "100%",
   },
+  traco: {
+    height: '2px',
+    width: '97%',
+    backgroundColor: '#0C2454',
+    marginBottom: '20px',
+    marginLeft:'20px'
+  },
+  titulo:{
+    fontSize:"25px",
+    marginLeft:"20px",
+    marginTop:"20px",
+    color:"#0c2c54",
+ }
 }));
 
 const SettingsCustom = () => {
@@ -152,25 +182,30 @@ const SettingsCustom = () => {
   return (
     <MainContainer className={classes.root}>
       <MainHeader>
-        <Title>{i18n.t("settings.title")}</Title>
+        
       </MainHeader>
       <Paper className={classes.mainPaper} elevation={1}>
+      <div className={classes.titulo}>Configurações</div>
+      <div className={classes.traco}></div>
         <Tabs
           value={tab}
           indicatorColor="primary"
           textColor="primary"
           scrollButtons="on"
-          variant="scrollable"
+          variant="fullWidth"
           onChange={handleTabChange}
-          className={classes.tab}
+          classes={{ root: classes.root }}
+          style={{ display: 'flex', width: '90%',marginLeft:'66px', marginBottom:'15px'}} // Mantém o display flex
         >
-          <Tab label="Opções" value={"options"} />
-          {schedulesEnabled && <Tab label="Horários" value={"schedules"} />}
-          {isSuper() ? <Tab label="Empresas" value={"companies"} /> : null}
-          {isSuper() ? <Tab label="Planos" value={"plans"} /> : null}
-          {isSuper() ? <Tab label="Ajuda" value={"helps"} /> : null}
+
+          <Tab label="Opções" value={"options"} classes={{ root: classes.tab }} />
+  
+  {isSuper() ? <Tab label="Empresas" value={"companies"} classes={{ root: classes.tab }} /> : null}
+  {isSuper() ? <Tab label="Ajuda" value={"helps"} classes={{ root: classes.tab }} style={{ flexGrow: 1 }}/> : null}
+
         </Tabs>
         <Paper className={classes.paper} elevation={0}>
+          
           <TabPanel
             className={classes.container}
             value={tab}
