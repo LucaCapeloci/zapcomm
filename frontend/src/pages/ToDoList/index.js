@@ -7,35 +7,74 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import IconButton from '@material-ui/core/IconButton';
+import Checkbox from '@material-ui/core/Checkbox';
 import DeleteIcon from '@material-ui/icons/Delete';
+import Title from "../../components/Title";
 import EditIcon from '@material-ui/icons/Edit';
+import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles({
   root: {
     display: 'flex',
     flexDirection: 'column',
-    alignItems: 'center',
+    alignItems: 'flex-start',
     margin: '2rem'
   },
   inputContainer: {
     display: 'flex',
     width: '100%',
-    marginBottom: '1rem'
+    marginTop: "1rem",
+    marginBottom: '1rem',
+    backgroundColor:"white",
+    height: '60px',
+
   },
   input: {
     flexGrow: 1,
-    marginRight: '1rem'
+    marginRight: '1rem',
+    height: '60px',    
+    backgroundColor: 'white', 
+    '& .MuiOutlinedInput-root': {
+      backgroundColor: 'white',  
+      '& fieldset': {
+        border: 'none',
+      },
+    },
   },
   listContainer: {
     width: '100%',
     height: '100%',
     marginTop: '1rem',
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#E6EDF5',
     borderRadius: '5px',
   },
-  list: {
-    marginBottom: '5px'
-  }
+  listItem: {
+    borderRadius: '5px', 
+    padding: '10px', 
+    marginBottom: '10px',
+    backgroundColor: '#fff',
+    height: '40px',
+  },
+  checkbox: {
+    color: '#0C2C4C', 
+    '&.Mui-checked': {
+      color: '#0C2C4C',
+    },
+    '&.Mui-checked:hover': {
+      backgroundColor: 'rgba(12, 44, 76, 0.08)',
+    },
+    '&:hover': {
+      backgroundColor: 'rgba(12, 44, 76, 0.1)',
+    },
+    '&:active': {
+      backgroundColor: '#0C2C4C',
+      color: '#fff',
+    },
+  },
+  completedText: {
+    color: 'gray',
+    textDecoration: "line-through",
+  },
 });
 
 const ToDoList = () => {
@@ -61,22 +100,21 @@ const ToDoList = () => {
   };
 
   const handleAddTask = () => {
-    if (!task.trim()) {
-      // Impede que o usuário crie uma tarefa sem texto
-      return;
-    }
+    if (!task.trim()) return;
 
     const now = new Date();
     if (editIndex >= 0) {
-      // Editar tarefa existente
       const newTasks = [...tasks];
-      newTasks[editIndex] = {text: task, updatedAt: now, createdAt: newTasks[editIndex].createdAt};
+      newTasks[editIndex] = {
+        ...newTasks[editIndex],
+        text: task,
+        updatedAt: now,
+      };
       setTasks(newTasks);
       setTask('');
       setEditIndex(-1);
     } else {
-      // Adicionar nova tarefa
-      setTasks([...tasks, {text: task, createdAt: now, updatedAt: now}]);
+      setTasks([...tasks, { text: task, completed: false, createdAt: now, updatedAt: now }]);
       setTask('');
     }
   };
@@ -87,13 +125,32 @@ const ToDoList = () => {
   };
 
   const handleDeleteTask = (index) => {
-    const newTasks = [...tasks];
-    newTasks.splice(index, 1);
+    const newTasks = tasks.filter((_, i) => i !== index);
     setTasks(newTasks);
+  };
+
+  const toggleTaskCompletion = (index) => {
+    const updatedTasks = tasks.map((task, i) => 
+      i === index ? { ...task, completed: !task.completed } : task
+    );
+    setTasks(updatedTasks);
   };
 
   return (
     <div className={classes.root}>
+      <Title>
+  <div 
+    style={{
+      color: "#0C2C4C", 
+      fontWeight: "bold", 
+      fontFamily: "Nunito", 
+      fontSize: "24px", 
+      lineHeight: "18px", 
+    }}
+  >
+    Tarefas ({tasks.length})
+  </div>
+</Title>
       <div className={classes.inputContainer}>
         <TextField
           className={classes.input}
@@ -107,10 +164,22 @@ const ToDoList = () => {
         </Button>
       </div>
       <div className={classes.listContainer}>
-        <List>
+        <List disablePadding component="div">
           {tasks.map((task, index) => (
-            <ListItem key={index} className={classes.list}>
-              <ListItemText primary={task.text} secondary={task.updatedAt.toLocaleString()} />
+            <ListItem key={index} className={classes.listItem}>
+              <Checkbox
+                className={classes.checkbox}
+                size="small"
+                edge="start"
+                checked={task.completed}
+                onChange={() => toggleTaskCompletion(index)}
+              />
+              <ListItemText
+                primary={task.text}
+                secondary={task.updatedAt.toLocaleString()}
+                className={task.completed ? classes.completedText : ''}
+              />
+              
               <ListItemSecondaryAction>
                 <IconButton onClick={() => handleEditTask(index)}>
                   <EditIcon />
@@ -126,6 +195,5 @@ const ToDoList = () => {
     </div>
   );
 };
-
 
 export default ToDoList;

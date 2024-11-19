@@ -32,13 +32,18 @@ import { useDate } from "../../hooks/useDate";
 import moment from "moment";
 
 const useStyles = makeStyles((theme) => ({
+  body: {
+    fontFamily: "Nunito, sans-serif",
+  },
   root: {
     width: "100%",
+    backgroundColor: "#D0DEED",
   },
   mainPaper: {
     width: "100%",
     flex: 1,
     padding: theme.spacing(2),
+    backgroundColor: "#e6edf5",
   },
   fullWidth: {
     width: "100%",
@@ -47,12 +52,18 @@ const useStyles = makeStyles((theme) => ({
     width: "100%",
     overflowX: "scroll",
     ...theme.scrollbarStyles,
+    backgroundColor: "#D0DEED",
   },
   textfield: {
     width: "100%",
+    backgroundColor: "white",
+    borderRadius: "5px",
+    padding: "1px",
+    
   },
   textRight: {
     textAlign: "right",
+    fontFamily: "Nunito, sans-serif",
   },
   row: {
     paddingTop: theme.spacing(2),
@@ -65,6 +76,11 @@ const useStyles = makeStyles((theme) => ({
   buttonContainer: {
     textAlign: "right",
     padding: theme.spacing(1),
+  },
+  selectField: {
+    backgroundColor: "#ffffff", 
+    borderRadius: "5px",
+    padding: "10px",
   },
 }));
 
@@ -205,7 +221,7 @@ export function CompanyForm(props) {
                   label="Nome"
                   name="name"
                   variant="outlined"
-                  className={classes.fullWidth}
+                  className={`${classes.fullWidth} ${classes.textfield}`}
                   margin="dense"
                 />
               </Grid>
@@ -215,7 +231,7 @@ export function CompanyForm(props) {
                   label="E-mail"
                   name="email"
                   variant="outlined"
-                  className={classes.fullWidth}
+                  className={`${classes.fullWidth} ${classes.textfield}`}
                   margin="dense"
                   required
                 />
@@ -226,24 +242,25 @@ export function CompanyForm(props) {
                   label="Telefone"
                   name="phone"
                   variant="outlined"
-                  className={classes.fullWidth}
+                  className={`${classes.fullWidth} ${classes.textfield}`}
                   margin="dense"
                 />
               </Grid>
               <Grid xs={12} sm={6} md={2} item>
                 <FormControl margin="dense" variant="outlined" fullWidth>
-                  <InputLabel htmlFor="plan-selection">Plano</InputLabel>
+                  <InputLabel style={{ fontFamily: "Nunito, sans-serif", }} htmlFor="plan-selection">Plano</InputLabel>
                   <Field
+                    style={{ fontFamily: "Nunito, sans-serif", }}
                     as={Select}
                     id="plan-selection"
                     label="Plano"
                     labelId="plan-selection-label"
                     name="planId"
                     margin="dense"
-                    required
+                    className={`${classes.fullWidth} ${classes.textfield}`}
                   >
                     {plans.map((plan, key) => (
-                      <MenuItem key={key} value={plan.id}>
+                      <MenuItem style={{ fontFamily: "Nunito, sans-serif", }} key={key} value={plan.id}>
                         {plan.name}
                       </MenuItem>
                     ))}
@@ -252,71 +269,78 @@ export function CompanyForm(props) {
               </Grid>
               <Grid xs={12} sm={6} md={2} item>
                 <FormControl margin="dense" variant="outlined" fullWidth>
-                  <InputLabel htmlFor="status-selection">Status</InputLabel>
+                  <InputLabel  style={{ fontFamily: "Nunito, sans-serif", }} htmlFor="status-selection">Status</InputLabel>
                   <Field
+                    style={{ fontFamily: "Nunito, sans-serif", }}
                     as={Select}
                     id="status-selection"
                     label="Status"
                     labelId="status-selection-label"
                     name="status"
                     margin="dense"
+                    className={`${classes.fullWidth} ${classes.textfield}`}
                   >
-                    <MenuItem value={true}>Sim</MenuItem>
-                    <MenuItem value={false}>Não</MenuItem>
+                    <MenuItem style={{ fontFamily: "Nunito, sans-serif", }}  value={true}>Sim</MenuItem>
+                    <MenuItem style={{ fontFamily: "Nunito, sans-serif", }}  value={false}>Não</MenuItem>
                   </Field>
                 </FormControl>
               </Grid>
               <Grid xs={12} sm={6} md={2} item>
                 <FormControl margin="dense" variant="outlined" fullWidth>
-                  <InputLabel htmlFor="status-selection">Campanhas</InputLabel>
+                  <InputLabel style={{ fontFamily: "Nunito, sans-serif", }} htmlFor="status-selection">Campanhas</InputLabel>
                   <Field
+                    style={{ fontFamily: "Nunito, sans-serif", }}
                     as={Select}
                     id="campaigns-selection"
                     label="Campanhas"
                     labelId="campaigns-selection-label"
                     name="campaignsEnabled"
                     margin="dense"
+                    className={`${classes.fullWidth} ${classes.textfield}`}
                   >
-                    <MenuItem value={true}>Habilitadas</MenuItem>
-                    <MenuItem value={false}>Desabilitadas</MenuItem>
+                    <MenuItem style={{ fontFamily: "Nunito, sans-serif", }} value={true}>Habilitadas</MenuItem>
+                    <MenuItem style={{ fontFamily: "Nunito, sans-serif", }} value={false}>Desabilitadas</MenuItem>
                   </Field>
                 </FormControl>
               </Grid>
               <Grid xs={12} sm={6} md={2} item>
                 <FormControl variant="outlined" fullWidth>
                   <Field
+                    style={{ fontFamily: "Nunito, sans-serif", }}
                     as={TextField}
                     label="Data de Vencimento"
                     type="date"
                     name="dueDate"
+                    variant="outlined"
                     InputLabelProps={{
                       shrink: true,
                     }}
-                    variant="outlined"
                     fullWidth
                     margin="dense"
+                    className={`${classes.fullWidth} ${classes.textfield}`}
                   />
                 </FormControl>
               </Grid>
               <Grid xs={12} sm={6} md={2} item>
                 <FormControl margin="dense" variant="outlined" fullWidth>
-                  <InputLabel htmlFor="recorrencia-selection">
+                  <InputLabel style={{ fontFamily: "Nunito, sans-serif", }} htmlFor="recorrencia-selection">
                     Recorrência
                   </InputLabel>
-                  <Field
+                  <Select
+                    style={{ fontFamily: "Nunito, sans-serif", }}
                     as={Select}
                     label="Recorrência"
                     labelId="recorrencia-selection-label"
-                    id="recurrence"
                     name="recurrence"
                     margin="dense"
+                    className={`${classes.fullWidth} ${classes.textfield}`}
                   >
-                    <MenuItem value="MENSAL">Mensal</MenuItem>
+                    <MenuItem style={{ fontFamily: "Nunito, sans-serif", }} value="MENSAL">Mensal</MenuItem>
                     {/*<MenuItem value="BIMESTRAL">Bimestral</MenuItem>*/}
                     {/*<MenuItem value="TRIMESTRAL">Trimestral</MenuItem>*/}
                     {/*<MenuItem value="SEMESTRAL">Semestral</MenuItem>*/}
                     {/*<MenuItem value="ANUAL">Anual</MenuItem>*/}
-                  </Field>
+                    </Select>
                 </FormControl>
               </Grid>
               <Grid xs={12} item>
@@ -327,7 +351,8 @@ export function CompanyForm(props) {
                       style={{ marginTop: 7 }}
                       loading={loading}
                       onClick={() => onCancel()}
-                      variant="contained"
+                      color="primary"
+
                     >
                       Limpar
                     </ButtonWithSpinner>
@@ -340,8 +365,7 @@ export function CompanyForm(props) {
                           className={classes.fullWidth}
                           loading={loading}
                           onClick={() => onDelete(record)}
-                          variant="contained"
-                          color="secondary"
+                          color="primary" //padronização
                         >
                           Excluir
                         </ButtonWithSpinner>
@@ -390,6 +414,7 @@ export function CompanyForm(props) {
           </Form>
         )}
       </Formik>
+      
     </>
   );
 }
