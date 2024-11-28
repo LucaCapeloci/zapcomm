@@ -31,11 +31,12 @@ const useStyles = makeStyles(theme => ({
 		position: "relative",
 		display: "flex",
 		height: "100%",
+    width: '100%',
 		flexDirection: "column",
 		overflow: "hidden",
 		borderTopRightRadius: 0,
 		borderBottomRightRadius: 0,
-		borderRadius:0,
+		borderRadius:"16px",
 	},
 
 	tabsHeader: {
@@ -53,10 +54,29 @@ const useStyles = makeStyles(theme => ({
 		marginLeft: "auto",
 		padding: 8,
 	},
+  Paper: {
+    borderRadius: "16px",
+  },
 
 	tab: {
 		minWidth: 120,
-		width: 120,
+		width: 80,
+    backgroundColor: theme.palette.options,
+    border: `1px solid #0C2454`, // Borda em todos os tabs
+    flexGrow: 1,
+    fontSize: '1.2rem',
+    '&.Mui-selected': {
+      backgroundColor: '#0C2454',
+      color: 'white',
+    },
+    '&:first-child': {
+      borderTopLeftRadius: 4, // Bordas arredondadas apenas no canto superior esquerdo
+      borderBottomLeftRadius: 4, // Bordas arredondadas na parte inferior esquerda
+    },
+    '&:last-child': {
+      borderTopRightRadius: 4, // Bordas arredondadas apenas no canto superior direito
+      borderBottomRightRadius: 4, // Bordas arredondadas na parte inferior direita
+    },
 	},
 
 	internalTab: {
@@ -136,7 +156,13 @@ const useStyles = makeStyles(theme => ({
 		'& .MuiInputLabel-outlined': {
 			marginTop: "-6px"
 		}
-	}
+	},
+  tab: {
+    minWidth: 60, // Diminui a largura mínima das tabs
+    width: 60, // Define uma largura fixa menor
+    backgroundColor: theme.palette.options,
+    fontSize: '0.9rem', // Diminui o tamanho da fonte, se necessário
+  },
 }));
 
 const TicketsManagerTabs = () => {
@@ -201,7 +227,7 @@ const TicketsManagerTabs = () => {
 
   const applyPanelStyle = (status) => {
     if (tabOpen !== status) {
-      return { width: 0, height: 0 };
+      return { width: '100%', height: 'auto' };
     }
   };
 
@@ -240,29 +266,37 @@ const TicketsManagerTabs = () => {
           textColor="primary"
           aria-label="icon label tabs example"
         >
-          <Tab
+          <Tab 
             value={"open"}
-            icon={<MoveToInboxIcon />}
+            
             label={i18n.t("tickets.tabs.open.title")}
+            classes={{ root: classes.tab }}
+            style={{ minWidth: "80px", width: "80px" }}
+          />
+          <Tab
+            value={"waiting"}
+           
+            label={i18n.t("tickets.tabs.waiting.title")}
             classes={{ root: classes.tab }}
           />
           <Tab
             value={"closed"}
-            icon={<CheckBoxIcon />}
+           
             label={i18n.t("tickets.tabs.closed.title")}
             classes={{ root: classes.tab }}
           />
+
           <Tab
             value={"search"}
-            icon={<SearchIcon />}
+            
             label={i18n.t("tickets.tabs.search.title")}
             classes={{ root: classes.tab }}
           />
+
         </Tabs>
       </Paper>
       <Paper square elevation={0} className={classes.ticketOptionsBox}>
-        {tab === "search" ? (
-          <div className={classes.serachInputWrapper}>
+      <div className={classes.serachInputWrapper} style={{width:"500px"}} >
             <SearchIcon className={classes.searchIcon} />
             <InputBase
               className={classes.searchInput}
@@ -271,25 +305,23 @@ const TicketsManagerTabs = () => {
               type="search"
               onChange={handleSearch}
             />
-          </div>
-        ) : (
-          <>
-            <Button
+          </div> 
+          <Button style={{marginRight:"15px"}}
               variant="outlined"
               color="primary"
               onClick={() => setNewTicketModalOpen(true)}
             >
               {i18n.t("ticketsManager.buttons.newTicket")}
             </Button>
-            <Can
+            <Can 
               role={user.profile}
               perform="tickets-manager:showall"
               yes={() => (
-                <FormControlLabel
+                <FormControlLabel style={{marginRight:"40px"}} /* Altera o botão de todos/switch */
                   label={i18n.t("tickets.buttons.showAll")}
                   labelPlacement="start"
                   control={
-                    <Switch
+                    <Switch 
                       size="small"
                       checked={showAllTickets}
                       onChange={() =>
@@ -300,10 +332,10 @@ const TicketsManagerTabs = () => {
                     />
                   }
                 />
-              )}
-            />
-          </>
-        )}
+              )}>
+
+              </Can>
+       
         <TicketsQueueSelect
           style={{ marginLeft: 6 }}
           selectedQueueIds={selectedQueueIds}
@@ -311,6 +343,10 @@ const TicketsManagerTabs = () => {
           onChange={(values) => setSelectedQueueIds(values)}
         />
       </Paper>
+      <TagsFilter onFiltered={handleSelectedTags} />
+        {profile === "admin" && (
+          <UsersFilter onFiltered={handleSelectedUsers} />
+        )}
       <TabPanel value={tab} name="open" className={classes.ticketsWrapper}>
         <Tabs
           value={tabOpen}
@@ -318,6 +354,7 @@ const TicketsManagerTabs = () => {
           indicatorColor="primary"
           textColor="primary"
           variant="fullWidth"
+          
         >
           <Tab
             label={
@@ -331,6 +368,30 @@ const TicketsManagerTabs = () => {
             }
             value={"open"}
           />
+
+         
+        </Tabs>
+        <Paper className={classes.ticketsWrapper}>
+          <TicketsList
+            status="open"
+            showAll={showAllTickets}
+            selectedQueueIds={selectedQueueIds}
+            updateCount={(val) => setOpenCount(val)}
+            style={applyPanelStyle("open")}
+          />
+          
+        </Paper>
+      </TabPanel>
+      <TabPanel value={tab} name="waiting" className={classes.ticketsWrapper}>
+      <Tabs
+          value={tabOpen}
+          onChange={handleChangeTabOpen}
+          indicatorColor="primary"
+          textColor="primary"
+          variant="fullWidth"
+        >
+
+          
           <Tab
             label={
               <Badge
@@ -345,33 +406,35 @@ const TicketsManagerTabs = () => {
           />
         </Tabs>
         <Paper className={classes.ticketsWrapper}>
-          <TicketsList
-            status="open"
-            showAll={showAllTickets}
-            selectedQueueIds={selectedQueueIds}
-            updateCount={(val) => setOpenCount(val)}
-            style={applyPanelStyle("open")}
-          />
-          <TicketsList
+
+        <TicketsList
+
             status="pending"
             selectedQueueIds={selectedQueueIds}
             updateCount={(val) => setPendingCount(val)}
             style={applyPanelStyle("pending")}
+            searchParam={searchParam}
+          tags={selectedTags}
+          users={selectedUsers}
           />
+
         </Paper>
       </TabPanel>
+  
       <TabPanel value={tab} name="closed" className={classes.ticketsWrapper}>
+      
         <TicketsList
           status="closed"
           showAll={true}
           selectedQueueIds={selectedQueueIds}
+          searchParam={searchParam}
+          tags={selectedTags}
+          users={selectedUsers}
         />
+    
       </TabPanel>
       <TabPanel value={tab} name="search" className={classes.ticketsWrapper}>
-        <TagsFilter onFiltered={handleSelectedTags} />
-        {profile === "admin" && (
-          <UsersFilter onFiltered={handleSelectedUsers} />
-        )}
+       
         <TicketsList
           searchParam={searchParam}
           showAll={true}

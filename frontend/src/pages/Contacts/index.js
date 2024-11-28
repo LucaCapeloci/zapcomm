@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useReducer, useContext } from "react";
-
+import {useMediaQuery} from "@material-ui/core"
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 import { Tooltip } from "@material-ui/core";
@@ -35,8 +35,12 @@ import { AuthContext } from "../../context/Auth/AuthContext";
 import { Can } from "../../components/Can";
 import NewTicketModal from "../../components/NewTicketModal";
 import { SocketContext } from "../../context/Socket/SocketContext";
-
+import Announcements from "../Annoucements/index"
 import {CSVLink} from "react-csv";
+import Plus from "../../assets/plus.png"
+import Importa from "../../assets/importa.png"
+import Exporta from "../../assets/export.png"
+import QueueIntegration from "../QueueIntegration";
 
 const reducer = (state, action) => {
   if (action.type === "LOAD_CONTACTS") {
@@ -88,7 +92,79 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     overflowY: "scroll",
     ...theme.scrollbarStyles,
+    borderRadius:'16px'
   },
+
+  traco: {
+    height: '2px',
+    width: '100%',
+    backgroundColor: '#0C2454',
+    marginLeft: '0px',
+  },
+  icones: {
+    width:'25px',
+    [theme.breakpoints.down("sm")]:{
+      width:'18px'
+    }
+  },
+  icones2: {
+    [theme.breakpoints.down("sm")]:{
+      width:'15px'
+    }
+  },
+  icones3: {
+    width:'18px',
+    [theme.breakpoints.down("sm")]:{
+      width:'13px'
+    }
+  },
+  fundo: {
+    marginTop:'80px',
+    backgroundColor:'white',
+    width:'90%',
+    height:'100%',
+    marginLeft:'67px',
+    borderRadius:'18px',
+    padding:'16px',
+    overflowY:'scroll',
+    ...theme.scrollbarStyles,
+    [theme.breakpoints.down("sm")]:{
+      marginLeft:'25px',
+    }
+  },
+  celulaTabela:{
+    overflow: 'hidden',
+    color:'#0C2454',
+    fontWeight:"bold",
+    [theme.breakpoints.down("sm")]:{
+      width:'400px',
+      fontSize: '13px',
+      padding:'6px'
+    } 
+  },
+  barraDePesquisa:{
+    [theme.breakpoints.down("sm")]:{
+      width:'130px'
+    }
+    
+  },
+  botoesContatos:{
+    backgroundColor:"#0C2454",
+    width:'80px',
+    height:'40px',
+    padding:'10px',
+    borderRadius:'10px',
+    margin:'5px',
+    border:'0',
+    [theme.breakpoints.down("sm")]:{
+    width:'40px',
+    height:'40px',
+    padding:'7px',
+    border:'0',
+    borderRadius:'8px',
+    margin:'5px',
+    }
+  }
 }));
 
 const Contacts = () => {
@@ -231,7 +307,7 @@ const Contacts = () => {
   };
 
   return (
-    <MainContainer className={classes.mainContainer}>
+    <div style={{height:'80%'}}>
       <NewTicketModal
         modalOpen={newTicketModalOpen}
         initialContact={contactTicket}
@@ -251,91 +327,117 @@ const Contacts = () => {
             ? `${i18n.t("contacts.confirmationModal.deleteTitle")} ${
                 deletingContact.name
               }?`
-            : `${i18n.t("contacts.confirmationModal.importTitlte")}`
-        }
+            : `${i18n.t("Importar Contato")}`
+         }
         open={confirmOpen}
         onClose={setConfirmOpen}
         onConfirm={(e) =>
           deletingContact
             ? handleDeleteContact(deletingContact.id)
             : handleimportContact()
-        }
-      >
+        }>
         {deletingContact
           ? `${i18n.t("contacts.confirmationModal.deleteMessage")}`
           : `${i18n.t("contacts.confirmationModal.importMessage")}`}
       </ConfirmationModal>
-      <MainHeader>
-        <Title>{i18n.t("contacts.title")}</Title>
+      
+      
+      <div className={classes.fundo}>
+       <div className={classes.contatos}>  
+        <MainHeader style={{textAlign:'center'}}>
+        <Title  style={{color:'#0C2454', fontWeight:"bold"}}>{i18n.t("contacts.title")}</Title>
         <MainHeaderButtonsWrapper>
           <TextField
             placeholder={i18n.t("contacts.searchPlaceholder")}
             type="search"
             value={searchParam}
             onChange={handleSearch}
+            className={classes.barraDePesquisa}
             InputProps={{
+              disableUnderline: true, // remove a linha
+              style: {
+                color: '#0C2454',// cor do texto normal
+                fontWeight: 'bold', // texto em negrito
+                backgroundColor: "#D9D9D9",
+                borderRadius: '8px',
+                height: "36.5px",
+              },
+              inputProps: {
+                style: {
+                  paddingLeft: '8px',
+                  '&::placeholder': {
+                    color: '#0C2454',
+                    fontWeight: 'bold',
+                    Opacity: 1, // cor do placeholder
+                    paddingLeft: "10px"
+                  
+                  },
+                },
+              },
+              endAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon style={{ color: '#0C2454' }} />
+                </InputAdornment>
+              ),
+            }}
+            /*InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
                   <SearchIcon style={{ color: "gray" }} />
                 </InputAdornment>
               ),
-            }}
+            }}*/
           />
-          <Button
-            variant="contained"
-            color="primary"
+          <button
             onClick={(e) => setConfirmOpen(true)}
-          >
-            {i18n.t("contacts.buttons.import")}
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
+            className={classes.botoesContatos}
+            >
+            <img src={Importa} className={classes.icones} />
+          </button>
+          <button
             onClick={handleOpenContactModal}
-          >
-            {i18n.t("contacts.buttons.add")}
-          </Button>
+            className={classes.botoesContatos}
+            >
+            <img src={Plus} className={classes.icones2}/>
+            
+          </button>
 
-         <CSVLink style={{ textDecoration:'none'}} separator=";" filename={'contatos.csv'} data={contacts.map((contact) => ({ name: contact.name, number: contact.number, email: contact.email }))}>
-          <Button	variant="contained" color="primary"> 
-          EXPORTAR CONTATOS 
-          </Button>
+         <CSVLink style={{ textDecoration:'none', margin:'0'}} separator=";" filename={'contatos.csv'} data={contacts.map((contact) => ({ name: contact.name, number: contact.number, email: contact.email }))}>
+          <button className={classes.botoesContatos}> 
+          <img src={Exporta} className={classes.icones3} />
+          </button>
           </CSVLink>		  
 
         </MainHeaderButtonsWrapper>
       </MainHeader>
-      <Paper
-        className={classes.mainPaper}
-        variant="outlined"
-        onScroll={handleScroll}
-      >
-        <Table size="small">
+      <div className={classes.traco}></div>
+        <Table size="small" style={{ borderCollapse: 'separate', borderSpacing: '0 20px' }}>
           <TableHead>
             <TableRow>
-              <TableCell padding="checkbox" />
-              <TableCell>{i18n.t("contacts.table.name")}</TableCell>
-              <TableCell align="center">
+              <TableCell padding="checkbox" style={{color:'#0C2454', fontWeight:"bold"}}/>
+              <TableCell style={{color:'#0C2454', fontWeight:"bold"}}>{i18n.t("contacts.table.name")}</TableCell>
+              <TableCell align="center" style={{color:'#0C2454', fontWeight:"bold"}}>
                 {i18n.t("contacts.table.whatsapp")}
               </TableCell>
-              <TableCell align="center">
+              <TableCell align="center" style={{color:'#0C2454', fontWeight:"bold"}}>
                 {i18n.t("contacts.table.email")}
               </TableCell>
-              <TableCell align="center">
+              <TableCell align="center" style={{color:'#0C2454', fontWeight:"bold"}}> 
                 {i18n.t("contacts.table.actions")}
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody style={{backgroundColor: "#D9D9D9"}}>
             <>
               {contacts.map((contact) => (
-                <TableRow key={contact.id}>
-                  <TableCell style={{ paddingRight: 0 }}>
+                <TableRow key={contact.id} style={{marginBottom: "5px", borderRadius:'16px'}}>
+                  <TableCell className={classes.celulaTabela} style={{ borderRadius: '8px 0 0 8px'}}>
                     {<Avatar src={contact.profilePicUrl} />}
                   </TableCell>
-                  <TableCell>{contact.name}</TableCell>
-                  <TableCell align="center">{contact.number}</TableCell>
-                  <TableCell align="center">{contact.email}</TableCell>
-                  <TableCell align="center">
+                  <TableCell align='center' className={classes.celulaTabela}>{contact.name}</TableCell>
+                  <TableCell align="center" className={classes.celulaTabela}>{contact.number}</TableCell>
+                  <TableCell align="center" className={classes.celulaTabela}>{contact.email}</TableCell>
+                  <TableCell align="center" className={classes.celulaTabela} style={{ borderRadius: '0 8px 8px 0'}}>
                     <IconButton
                       size="small"
                       onClick={() => {
@@ -343,13 +445,13 @@ const Contacts = () => {
                         setNewTicketModalOpen(true);
                       }}
                     >
-                      <WhatsAppIcon />
+                      <WhatsAppIcon style={{color:"#34D3A3"}}/>
                     </IconButton>
                     <IconButton
                       size="small"
                       onClick={() => hadleEditContact(contact.id)}
                     >
-                      <EditIcon />
+                      <EditIcon style={{color:"#0C2454"}}/>
                     </IconButton>
                     <Can
                       role={user.profile}
@@ -362,7 +464,7 @@ const Contacts = () => {
                             setDeletingContact(contact);
                           }}
                         >
-                          <DeleteOutlineIcon />
+                          <DeleteOutlineIcon style={{color:"red"}}/>
                         </IconButton>
                       )}
                     />
@@ -373,8 +475,10 @@ const Contacts = () => {
             </>
           </TableBody>
         </Table>
-      </Paper>
-    </MainContainer>
+        </div>
+        <Announcements></Announcements>
+      </div>
+    </div>
   );
 };
 
