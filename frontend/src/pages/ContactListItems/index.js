@@ -95,7 +95,25 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     overflowY: "scroll",
     ...theme.scrollbarStyles,
+    borderRadius:'16px'
   },
+  traco: {
+    height: '2px',
+    width: '100%',
+    backgroundColor: '#0C2454',
+    marginLeft: '0px',
+  },
+  fundo: {
+		marginTop:'80px',
+		backgroundColor:'white',
+		width:'90%',
+		height:'100%',
+		marginLeft:'67px',
+		borderRadius:'18px',
+		padding:'16px',
+		overflowY: "scroll",
+		...theme.scrollbarStyles,
+	  },
 }));
 
 const ContactListItems = () => {
@@ -248,7 +266,7 @@ const ContactListItems = () => {
   };
 
   return (
-    <MainContainer className={classes.mainContainer}>
+    <div style={{height:'80%'}}>
       <ContactListItemModal
         open={contactListItemModalOpen}
         onClose={handleCloseContactListItemModal}
@@ -282,7 +300,10 @@ const ContactListItems = () => {
           </>
         )}
       </ConfirmationModal>
-      <MainHeader>
+
+      <div className={classes.fundo}>
+        <div className={classes.itemcampanha}>
+              <MainHeader>
         <Grid style={{ width: "99.6%" }} container>
           <Grid xs={12} sm={5} item>
             <Title>{contactList.name}</Title>
@@ -290,19 +311,38 @@ const ContactListItems = () => {
           <Grid xs={12} sm={7} item>
             <Grid spacing={2} container>
               <Grid xs={12} sm={6} item>
-                <TextField
-                  fullWidth
-                  placeholder={i18n.t("contactListItems.searchPlaceholder")}
-                  type="search"
-                  value={searchParam}
-                  onChange={handleSearch}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <SearchIcon style={{ color: "gray" }} />
-                      </InputAdornment>
-                    ),
-                  }}
+              <TextField
+            placeholder='Pesquisar Contatos'
+            type="search"
+            value={searchParam}
+            onChange={handleSearch}
+            InputProps={{
+              disableUnderline: true, // remove a linha
+              style: {
+                color: '#0C2454',// cor do texto normal
+                fontWeight: 'bold', // texto em negrito
+                backgroundColor: "#D9D9D9",
+                borderRadius: '8px',
+                height: "36.5px",
+              },
+              inputProps: {
+                style: {
+                  paddingLeft: '8px',
+                  '&::placeholder': {
+                    color: '#0C2454',
+                    fontWeight: 'bold',
+                    Opacity: 1, // cor do placeholder
+                    paddingLeft: "10px"
+                  
+                  },
+                },
+              },
+              endAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon style={{ color: '#0C2454' }} />
+                </InputAdornment>
+              ),
+            }}
                 />
               </Grid>
               <Grid xs={4} sm={2} item>
@@ -342,11 +382,7 @@ const ContactListItems = () => {
           </Grid>
         </Grid>
       </MainHeader>
-      <Paper
-        className={classes.mainPaper}
-        variant="outlined"
-        onScroll={handleScroll}
-      >
+      <div className={classes.traco}></div>
         <>
           <input
             style={{ display: "none" }}
@@ -360,29 +396,29 @@ const ContactListItems = () => {
             ref={fileUploadRef}
           />
         </>
-        <Table size="small">
+        <Table size="small" style={{ borderCollapse: 'separate', borderSpacing: '0 20px' }}>
           <TableHead>
             <TableRow>
-              <TableCell align="center" style={{ width: "0%" }}>
+              <TableCell align="center" style={{ width: "0%", color:"#0C2454"}}>
                 #
               </TableCell>
-              <TableCell>{i18n.t("contactListItems.table.name")}</TableCell>
-              <TableCell align="center">
+              <TableCell align='center'style={{color:'#0C2454'}}>{i18n.t("contactListItems.table.name")}</TableCell>
+              <TableCell align="center" style={{color:'#0C2454'}}>
                 {i18n.t("contactListItems.table.number")}
               </TableCell>
-              <TableCell align="center">
+              <TableCell align="center" style={{color:'#0C2454'}}>
                 {i18n.t("contactListItems.table.email")}
               </TableCell>
-              <TableCell align="center">
+              <TableCell align="center" style={{color:'#0C2454'}}>
                 {i18n.t("contactListItems.table.actions")}
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          <TableBody style={{backgroundColor: "#D9D9D9"}}>
             <>
               {contacts.map((contact) => (
                 <TableRow key={contact.id}>
-                  <TableCell align="center" style={{ width: "0%" }}>
+                  <TableCell align="center" style={{ borderRadius: '8px 0 0 8px', overflow: 'hidden',color:'#0C2454', fontWeight:"bold" }}>
                     <IconButton>
                       {contact.isWhatsappValid ? (
                         <CheckCircleIcon
@@ -392,19 +428,19 @@ const ContactListItems = () => {
                       ) : (
                         <BlockIcon
                           titleAccess="Whatsapp Inválido"
-                          htmlColor="grey"
+                          htmlColor="red"
                         />
                       )}
                     </IconButton>
                   </TableCell>
-                  <TableCell>{contact.name}</TableCell>
-                  <TableCell align="center">{contact.number}</TableCell>
-                  <TableCell align="center">{contact.email}</TableCell>
-                  <TableCell align="center">
+                  <TableCell align='center'style={{ overflow: 'hidden',color:'#0C2454', fontWeight:"bold" }}>{contact.name}</TableCell>
+                  <TableCell align="center" style={{ overflow: 'hidden',color:'#0C2454', fontWeight:"bold" }}>{contact.number}</TableCell>
+                  <TableCell align="center" style={{ overflow: 'hidden',color:'#0C2454', fontWeight:"bold" }}>{contact.email}</TableCell>
+                  <TableCell align="center" style={{ borderRadius: '0 8px 8px 0',overflow: 'hidden',color:'#0C2454', fontWeight:"bold" }}>
                     <IconButton
                       size="small"
                       onClick={() => hadleEditContact(contact.id)}
-                    >
+                    style={{color:'#0C2454'}}>
                       <EditIcon />
                     </IconButton>
                     <Can
@@ -417,7 +453,7 @@ const ContactListItems = () => {
                             setConfirmOpen(true);
                             setDeletingContact(contact);
                           }}
-                        >
+                          style={{color:'red'}}>
                           <DeleteOutlineIcon />
                         </IconButton>
                       )}
@@ -429,8 +465,9 @@ const ContactListItems = () => {
             </>
           </TableBody>
         </Table>
-      </Paper>
-    </MainContainer>
+        </div>
+      </div>
+    </div>
   );
 };
 

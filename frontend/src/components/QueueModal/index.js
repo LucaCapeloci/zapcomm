@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 
+
 import * as Yup from "yup";
 import { Formik, Form, Field } from "formik";
 import { toast } from "react-toastify";
-
+import DeleteIcon from '@material-ui/icons/Delete';
 import { makeStyles } from "@material-ui/core/styles";
 import { green } from "@material-ui/core/colors";
 import Button from "@material-ui/core/Button";
@@ -14,7 +15,9 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import CircularProgress from "@material-ui/core/CircularProgress";
 
+
 import { i18n } from "../../translate/i18n";
+
 
 import api from "../../services/api";
 import toastError from "../../errors/toastError";
@@ -35,6 +38,7 @@ import { Colorize } from "@material-ui/icons";
 import { QueueOptions } from "../QueueOptions";
 import SchedulesForm from "../SchedulesForm";
 
+
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
@@ -45,9 +49,11 @@ const useStyles = makeStyles((theme) => ({
     flex: 1,
   },
 
+
   btnWrapper: {
     position: "relative",
   },
+
 
   buttonProgress: {
     color: green[500],
@@ -65,7 +71,14 @@ const useStyles = makeStyles((theme) => ({
     width: 20,
     height: 20,
   },
+  blueLine: {
+    border: 0,
+    height: "2px",
+    width: "100%",
+    backgroundColor: "#0C2454",
+  },
 }));
+
 
 const QueueSchema = Yup.object().shape({
   name: Yup.string()
@@ -76,8 +89,10 @@ const QueueSchema = Yup.object().shape({
   greetingMessage: Yup.string(),
 });
 
+
 const QueueModal = ({ open, onClose, queueId }) => {
   const classes = useStyles();
+
 
   const initialState = {
     name: "",
@@ -89,12 +104,14 @@ const QueueModal = ({ open, onClose, queueId }) => {
     promptId: ""
   };
 
+
   const [colorPickerModalOpen, setColorPickerModalOpen] = useState(false);
   const [queue, setQueue] = useState(initialState);
   const [tab, setTab] = useState(0);
   const [schedulesEnabled, setSchedulesEnabled] = useState(false);
   const greetingRef = useRef();
   const [integrations, setIntegrations] = useState([]);
+
 
   const [schedules, setSchedules] = useState([
     { weekday: "Segunda-feira", weekdayEn: "monday", startTime: "08:00", endTime: "18:00", },
@@ -108,6 +125,7 @@ const QueueModal = ({ open, onClose, queueId }) => {
   const [selectedPrompt, setSelectedPrompt] = useState(null);
   const [prompts, setPrompts] = useState([]);
 
+
   useEffect(() => {
     (async () => {
       try {
@@ -118,6 +136,7 @@ const QueueModal = ({ open, onClose, queueId }) => {
       }
     })();
   }, []);
+
 
   useEffect(() => {
     api.get(`/settings`).then(({ data }) => {
@@ -130,10 +149,12 @@ const QueueModal = ({ open, onClose, queueId }) => {
     });
   }, []);
 
+
   useEffect(() => {
     (async () => {
       try {
         const { data } = await api.get("/queueIntegration");
+
 
         setIntegrations(data.queueIntegrations);
       } catch (err) {
@@ -141,6 +162,7 @@ const QueueModal = ({ open, onClose, queueId }) => {
       }
     })();
   }, []);
+
 
   useEffect(() => {
     (async () => {
@@ -152,11 +174,13 @@ const QueueModal = ({ open, onClose, queueId }) => {
         });
         data.promptId ? setSelectedPrompt(data.promptId) : setSelectedPrompt(null);
 
+
         setSchedules(data.schedules);
       } catch (err) {
         toastError(err);
       }
     })();
+
 
     return () => {
       setQueue({
@@ -170,10 +194,14 @@ const QueueModal = ({ open, onClose, queueId }) => {
     };
   }, [queueId, open]);
 
+
   const handleClose = () => {
     onClose();
     setQueue(initialState);
+
+
   };
+
 
   const handleSaveQueue = async (values) => {
     try {
@@ -193,15 +221,18 @@ const QueueModal = ({ open, onClose, queueId }) => {
     }
   };
 
+
   const handleSaveSchedules = async (values) => {
     toast.success("Clique em salvar para registar as alterações");
     setSchedules(values);
     setTab(0);
   };
 
+
   const handleChangePrompt = (e) => {
     setSelectedPrompt(e.target.value);
   };
+
 
   return (
     <div className={classes.root}>
@@ -211,11 +242,17 @@ const QueueModal = ({ open, onClose, queueId }) => {
         open={open}
         onClose={handleClose}
         scroll="paper"
+        PaperProps={{
+          style: {
+              borderRadius: 20,
+          },
+      }}
       >
-        <DialogTitle>
+        <DialogTitle style={{ color: '#0C2454' }}>
           {queueId
             ? `${i18n.t("queueModal.title.edit")}`
             : `${i18n.t("queueModal.title.add")}`}
+          <hr className={classes.blueLine} />
         </DialogTitle>
         <Tabs
           value={tab}
@@ -224,8 +261,8 @@ const QueueModal = ({ open, onClose, queueId }) => {
           onChange={(_, v) => setTab(v)}
           aria-label="disabled tabs example"
         >
-          <Tab label="Dados da Fila" />
-          {schedulesEnabled && <Tab label="Horários de Atendimento" />}
+          <Tab label="Dados da Fila" style={{ marginLeft: '25%' }} /> {/* Adicione margem esquerda aqui */}
+          {schedulesEnabled && <Tab label="Horários de Atendimento" style={{ marginLeft: '50px' }} />} {/* Adicione margem esquerda aqui */}
         </Tabs>
         {tab === 0 && (
           <Paper>
@@ -243,6 +280,7 @@ const QueueModal = ({ open, onClose, queueId }) => {
               {({ touched, errors, isSubmitting, values }) => (
                 <Form>
                   <DialogContent dividers>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%' }}>
                     <Field
                       as={TextField}
                       label={i18n.t("queueModal.form.name")}
@@ -253,6 +291,7 @@ const QueueModal = ({ open, onClose, queueId }) => {
                       variant="outlined"
                       margin="dense"
                       className={classes.textField}
+                      // Removido o style inline para aplicar estilo via className
                     />
                     <Field
                       as={TextField}
@@ -286,29 +325,27 @@ const QueueModal = ({ open, onClose, queueId }) => {
                       }}
                       variant="outlined"
                       margin="dense"
-                      className={classes.textField}
+                      className={classes.textField} // Aplicando a classe para o estilo
                     />
                     <ColorPicker
                       open={colorPickerModalOpen}
                       handleClose={() => setColorPickerModalOpen(false)}
                       onChange={(color) => {
                         values.color = color;
-                        setQueue(() => {
-                          return { ...values, color };
-                        });
+                        setQueue((prevState) => ({ ...prevState, color }));
                       }}
                     />
                     <Field
                       as={TextField}
                       label={i18n.t("queueModal.form.orderQueue")}
                       name="orderQueue"
-                      type="orderQueue"
                       error={touched.orderQueue && Boolean(errors.orderQueue)}
                       helperText={touched.orderQueue && errors.orderQueue}
                       variant="outlined"
                       margin="dense"
-                      className={classes.textField1}
+                      className={classes.textField}
                     />
+                  </div>
                     <div>
                       <FormControl
                         variant="outlined"
@@ -335,6 +372,7 @@ const QueueModal = ({ open, onClose, queueId }) => {
                             </MenuItem>
                           ))}
                         </Field>
+
 
                       </FormControl>
                       <FormControl
@@ -425,9 +463,9 @@ const QueueModal = ({ open, onClose, queueId }) => {
                       onClick={handleClose}
                       color="secondary"
                       disabled={isSubmitting}
-                      variant="outlined"
+                      variant="contained"
                     >
-                      {i18n.t("queueModal.buttons.cancel")}
+                      <DeleteIcon style={{ marginRight: '5px', marginLeft: '5px' }} /> {/* Adiciona o ícone */}
                     </Button>
                     <Button
                       type="submit"
@@ -467,4 +505,7 @@ const QueueModal = ({ open, onClose, queueId }) => {
   );
 };
 
+
 export default QueueModal;
+
+
