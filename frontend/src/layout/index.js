@@ -33,6 +33,7 @@ import toastError from "../errors/toastError";
 import AnnouncementsPopover from "../components/AnnouncementsPopover";
 
 import logo from "../assets/logo.png";
+import logoclara from "../assets/logoclara.png";
 import { SocketContext } from "../context/Socket/SocketContext";
 import ChatPopover from "../pages/Chat/ChatPopover";
 
@@ -110,6 +111,8 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
   },
   drawerPaper: {
+    background: "#0C2C54",
+    color : "#FFFFFF",
     position: "relative",
     whiteSpace: "nowrap",
     width: drawerWidth,
@@ -118,7 +121,7 @@ const useStyles = makeStyles((theme) => ({
       duration: theme.transitions.duration.enteringScreen,
     }),
     [theme.breakpoints.down("sm")]: {
-      width: "100%"
+      width: "20%"
     },
     ...theme.scrollbarStylesSoft
   },
@@ -133,7 +136,7 @@ const useStyles = makeStyles((theme) => ({
       width: theme.spacing(9),
     },
     [theme.breakpoints.down("sm")]: {
-      width: "100%"
+      width: "20%"
     }
   },
   appBarSpacer: {
@@ -160,7 +163,7 @@ const useStyles = makeStyles((theme) => ({
     overflowY: "scroll",
     ...theme.scrollbarStyles,
   },
-  NotificationsPopOver: {
+  NotificationsPopOver: {   
     // color: theme.barraSuperior.secondary.main,
   },
   logo: {
@@ -345,9 +348,9 @@ const LoggedInLayout = ({ children, themeToggle }) => {
         open={drawerOpen}
       >
         <div className={classes.toolbarIcon}>
-          <img src={logo} className={classes.logo} alt="logo" />
+          {/*<img src={logoclara} className={classes.logo} alt="logo" />*/}
           <IconButton onClick={() => setDrawerOpen(!drawerOpen)}>
-            <ChevronLeftIcon />
+            <MenuIcon style={{ color: "white" }}     />
           </IconButton>
         </div>
         <Divider />
@@ -363,10 +366,10 @@ const LoggedInLayout = ({ children, themeToggle }) => {
       />
       <AppBar
         position="absolute"
-        className={clsx(classes.appBar, drawerOpen && classes.appBarShift)}
+        className={clsx(classes.appBar, drawerOpen && classes.appBarShift /* && classes.menuButtonHidden */)}
         color="primary"
       >
-        <Toolbar variant="dense" className={classes.toolbar}>
+        <Toolbar variant="dense" className={classes.toolbar /* && classes.menuButtonHidden */}>
           <IconButton
             edge="start"
             variant="contained"
@@ -377,7 +380,7 @@ const LoggedInLayout = ({ children, themeToggle }) => {
               drawerOpen && classes.menuButtonHidden
             )}
           >
-            <MenuIcon />
+            <MenuIcon style={{ color: "white" }}/>
           </IconButton>
 
           <Typography
@@ -413,7 +416,7 @@ const LoggedInLayout = ({ children, themeToggle }) => {
             aria-label={i18n.t("mainDrawer.appBar.refresh")}
             color="inherit"
           >
-            <CachedIcon style={{ color: "white" }} />
+            <MenuIcon  style={{ color: "white" }} />
           </IconButton>
 
           {user.id && <NotificationsPopOver volume={volume} />}
@@ -429,7 +432,7 @@ const LoggedInLayout = ({ children, themeToggle }) => {
               aria-haspopup="true"
               onClick={handleMenu}
               variant="contained"
-              style={{ color: "white" }}
+              style={{ color: "#FFFFFF" }}
             >
               <AccountCircle />
             </IconButton>

@@ -1,12 +1,9 @@
 node_modules
-public/*
 dist
-!public/.gitkeep
 .env.test
-docker-compose.yml
-
 yarn.lock
 yarn-error.log
+docker-compose.yml
 
 /src/config/sentry.js
 
