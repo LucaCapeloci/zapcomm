@@ -10,6 +10,7 @@ import ColorModeContext from "./layout/themeContext";
 import { SocketContext, SocketManager } from './context/Socket/SocketContext';
 
 import Routes from "./routes";
+import { Opacity } from "@material-ui/icons";
 
 const queryClient = new QueryClient();
 
@@ -31,24 +32,25 @@ const App = () => {
 
     const theme = createTheme(
         {
-            scrollbarStyles: {
-                "&::-webkit-scrollbar": {
-                    width: '8px',
-                    height: '8px',
-                },
-                "&::-webkit-scrollbar-thumb": {
-                    boxShadow: 'inset 0 0 6px rgba(0, 0, 0, 0.3)',
-                    backgroundColor: "#682EE3",
-                },
+            textField: {
+                backgroundColor: "#FFFFFF",
+                borderRadius: "10px",
+            },
+            typography: {
+              fontFamily: "nunito",  
+            },
+            shape: {
+                borderRadius: "10px",
             },
             scrollbarStylesSoft: {
                 "&::-webkit-scrollbar": {
                     width: "8px",
                 },
                 "&::-webkit-scrollbar-thumb": {
-                    backgroundColor: mode === "light" ? "#F3F3F3" : "#333333",
+                    backgroundColor: mode === "light" ? "#9BE8D1" : "#333333",
                 },
             },
+            /* Cores Antigas
             palette: {
                 type: mode,
                 primary: { main: mode === "light" ? "#682EE3" : "#FFFFFF" },
@@ -75,6 +77,40 @@ const App = () => {
                 messageIcons: mode === "light" ? "grey" : "#F3F3F3",
                 inputBackground: mode === "light" ? "#FFFFFF" : "#333",
                 barraSuperior: mode === "light" ? "linear-gradient(to right, #682EE3, #682EE3 , #682EE3)" : "#666",
+				boxticket: mode === "light" ? "#EEE" : "#666",
+				campaigntab: mode === "light" ? "#ededed" : "#666",
+				mediainput: mode === "light" ? "#ededed" : "#1c1c1c",
+            },
+            */
+            palette: {
+                type: mode,
+                background: { main: mode === "light" ? "#DCE5ED" : "#FFFFF"},
+                primary: { main: mode === "light" ? "#0C2454" : "#FFFFFF" },
+                secondary: { main: mode === "light" ? "#34d3a3" : "#FFFFFF" },
+                secondaryLight: {main: mode === "light" ? "#9BE8D1" : "#fff"},
+                secondaryLightHover: {main: mode === "light" ? "#7AE1C2" : "#fff"},
+                textPrimary: mode === "light" ? "#0C2454" : "#FFFFFF",
+                borderPrimary: mode === "light" ? "#0C2454" : "#FFFFFF",
+                dark: { main: mode === "light" ? "#333333" : "#F3F3F3" },
+                light: { main: mode === "light" ? "#FFF" : "#333333" },
+                tabHeaderBackground: mode === "light" ? "#EEE" : "#666",
+                optionsBackground: mode === "light" ? "#fafafa" : "#333",
+				options: mode === "light" ? "#fafafa" : "#666",
+				fontecor: mode === "light" ? "#128c7e" : "#fff",
+                fancyBackground: mode === "light" ? "#fafafa" : "#333",
+				bordabox: mode === "light" ? "#eee" : "#333",
+				newmessagebox: mode === "light" ? "#eee" : "#333",
+				inputdigita: mode === "light" ? "#fff" : "#666",
+				contactdrawer: mode === "light" ? "#fff" : "#666",
+				announcements: mode === "light" ? "#ededed" : "#333",
+				login: mode === "light" ? "#fff" : "#1C1C1C",
+				announcementspopover: mode === "light" ? "#fff" : "#666",
+				chatlist: mode === "light" ? "#eee" : "#666",
+				boxlist: mode === "light" ? "#ededed" : "#666",
+				boxchatlist: mode === "light" ? "#ededed" : "#333",
+                total: mode === "light" ? "#fff" : "#222",
+                messageIcons: mode === "light" ? "grey" : "#F3F3F3",
+                inputBackground: mode === "light" ? "#FFFFFF" : "#333",
 				boxticket: mode === "light" ? "#EEE" : "#666",
 				campaigntab: mode === "light" ? "#ededed" : "#666",
 				mediainput: mode === "light" ? "#ededed" : "#1c1c1c",

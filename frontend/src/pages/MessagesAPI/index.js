@@ -4,19 +4,33 @@ import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 
 import { i18n } from "../../translate/i18n";
-import { Button, CircularProgress, Grid, TextField, Typography } from "@material-ui/core";
+import MainHeader from "../../components/MainHeader"
+import { Button, CircularProgress, Divider, Grid, TextField, Typography } from "@material-ui/core";
 import { Field, Form, Formik } from "formik";
 import toastError from "../../errors/toastError";
 import { toast } from "react-toastify";
 // import api from "../../services/api";
 import axios from "axios";
 import usePlans from "../../hooks/usePlans";
+import Title from "../../components/Title";
 
 const useStyles = makeStyles((theme) => ({
+  root: {
+    height: "100vh",
+    display: "flex",
+    flexDirection: "column",
+    gap: theme.spacing(4),
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(6),
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(6),
+    overflowY: "scroll",
+    backgroundColor: theme.palette.background.main,
+    ...theme.scrollbarStylesSoft
+  },
   mainPaper: {
-    flex: 1,
+    backgroundColor: theme.palette.light.main,
     padding: theme.spacing(2),
-    paddingBottom: 100
   },
   mainHeader: {
     marginTop: theme.spacing(1),
@@ -29,6 +43,15 @@ const useStyles = makeStyles((theme) => ({
   },
   textRight: {
     textAlign: "right"
+  },
+  textField: {
+    ...theme.textField,
+  },
+  paper: {
+    padding: theme.spacing(2),
+    display: "flex",
+    marginBottom: theme.spacing(3),
+    alignContent: "center",
   }
 }));
 
@@ -124,7 +147,6 @@ const MessagesAPI = () => {
                   as={TextField}
                   label={i18n.t("messagesAPI.textMessage.token")}
                   name="token"
-                  autoFocus
                   variant="outlined"
                   margin="dense"
                   fullWidth
@@ -137,7 +159,6 @@ const MessagesAPI = () => {
                   as={TextField}
                   label={i18n.t("messagesAPI.textMessage.number")}
                   name="number"
-                  autoFocus
                   variant="outlined"
                   margin="dense"
                   fullWidth
@@ -150,7 +171,6 @@ const MessagesAPI = () => {
                   as={TextField}
                   label={i18n.t("messagesAPI.textMessage.body")}
                   name="body"
-                  autoFocus
                   variant="outlined"
                   margin="dense"
                   fullWidth
@@ -204,7 +224,6 @@ const MessagesAPI = () => {
                   as={TextField}
                   label={i18n.t("messagesAPI.mediaMessage.token")}
                   name="token"
-                  autoFocus
                   variant="outlined"
                   margin="dense"
                   fullWidth
@@ -217,7 +236,6 @@ const MessagesAPI = () => {
                   as={TextField}
                   label={i18n.t("messagesAPI.mediaMessage.number")}
                   name="number"
-                  autoFocus
                   variant="outlined"
                   margin="dense"
                   fullWidth
@@ -251,90 +269,96 @@ const MessagesAPI = () => {
   }
 
   return (
-    <Paper
-      className={classes.mainPaper}
-      style={{marginLeft: "5px"}}
-      // className={classes.elementMargin}
-      variant="outlined"
-    >
-      <Typography variant="h5">
-        Documentação para envio de mensagens
-      </Typography>
-      <Typography variant="h6" color="primary" className={classes.elementMargin}>
-        Métodos de Envio
-      </Typography>
-      <Typography component="div">
-        <ol>
-          <li>Mensagens de Texto</li>
-          <li>Mensagens de Media</li>
-        </ol>
-      </Typography>
-      <Typography variant="h6" color="primary" className={classes.elementMargin}>
-        Instruções
-      </Typography>
-      <Typography className={classes.elementMargin} component="div">
-        <b>Observações importantes</b><br />
-        <ul>
-          <li>Antes de enviar mensagens, é necessário o cadastro do token vinculado à conexão que enviará as mensagens. <br />Para realizar o cadastro acesse o menu "Conexões", clique no botão editar da conexão e insira o token no devido campo.</li>
-          <li>
-            O número para envio não deve ter mascara ou caracteres especiais e deve ser composto por:
-            <ul>
-              <li>Código do país</li>
-              <li>DDD</li>
-              <li>Número</li>
-            </ul>
-          </li>
-        </ul>
-      </Typography>
-      <Typography variant="h6" color="primary" className={classes.elementMargin}>
-        1. Mensagens de Texto
-      </Typography>
-      <Grid container>
-        <Grid item xs={12} sm={6}>
-          <Typography className={classes.elementMargin} component="div">
-            <p>Seguem abaixo a lista de informações necessárias para envio das mensagens de texto:</p>
-            <b>Endpoint: </b> {getEndpoint()} <br />
-            <b>Método: </b> POST <br />
-            <b>Headers: </b> Authorization (Bearer token) e Content-Type (application/json) <br />
-            <b>Body: </b> {"{ \"number\": \"5599999999999\", \"body\": \"Sua mensagem\" }"}
+    <div className={classes.root}>
+      <MainHeader>
+        <Title>Como enviar Mensagens:</Title>
+      </MainHeader>
+      <Paper
+        className={classes.mainPaper}
+        style={{marginLeft: "5px"}}
+        // className={classes.elementMargin}
+        variant="outlined"
+      >
+        <Typography className={classes.elementMargin} component="div">
+          <Typography variant="h6" color="primary">
+            Observações importantes:
           </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography className={classes.elementMargin}>
-            <b>Teste de Envio</b>
-          </Typography>
-          {renderFormMessageText()}
-        </Grid>
-      </Grid>
-      <Typography variant="h6" color="primary" className={classes.elementMargin}>
-        2. Mensagens de Media
-      </Typography>
-      <Grid container>
-        <Grid item xs={12} sm={6}>
-          <Typography className={classes.elementMargin} component="div">
-            <p>Seguem abaixo a lista de informações necessárias para envio das mensagens de texto:</p>
-            <b>Endpoint: </b> {getEndpoint()} <br />
-            <b>Método: </b> POST <br />
-            <b>Headers: </b> Authorization (Bearer token) e Content-Type (multipart/form-data) <br />
-            <b>FormData: </b> <br />
-            <ul>
-              <li>
-                <b>number: </b> 5599999999999
-              </li>
-              <li>
-                <b>medias: </b> arquivo
-              </li>
-            </ul>
-          </Typography>
-        </Grid>
-        <Grid item xs={12} sm={6}>
-          <Typography className={classes.elementMargin}>
-            <b>Teste de Envio</b>
-          </Typography>
-          {renderFormMessageMedia()}
-        </Grid>
-      </Grid>
-    </Paper>
+          <ul>
+            <li>
+              Antes de enviar mensagens, é necessário o cadastro do token vinculado à conexão que enviará as mensagens.
+              <br />
+              Para realizar o cadastro acesse o menu "Conexões", clique no botão editar da conexão e insira o token no devido campo.
+            </li>
+              <br />
+            <li>
+              O número para envio não deve ter mascara ou caracteres especiais e deve ser composto por:
+              <ul>
+                <li>Código do país</li>
+                <li>DDD</li>
+                <li>Número</li>
+              </ul>
+            </li>
+          </ul>
+        </Typography>
+
+        <Divider/>
+        <div className={classes.paper}>
+          <Grid container direction="column">
+            <Typography variant="h6" color="primary">
+              1. Mensagens de Texto
+            </Typography>
+            <Typography className={classes.elementMargin} component="div">
+              <p>Seguem abaixo a lista de informações necessárias para envio das mensagens de texto:</p>
+              <b>Endpoint: </b> {getEndpoint()} <br />
+              <b>Método: </b> POST <br />
+              <b>Headers: </b> Authorization (Bearer token) e Content-Type (application/json) <br />
+              <b>Body: </b> {"{ \"number\": \"5599999999999\", \"body\": \"Sua mensagem\" }"}
+            </Typography>
+          </Grid>
+          <Grid>
+            <Typography className={classes.elementMargin}>
+              <b>Teste de Envio</b>
+            </Typography>
+            {renderFormMessageText()}
+          </Grid>
+        </div>
+
+        <Divider/>
+        <div className={classes.paper}>
+          <Grid container direction="column">
+            <Typography variant="h6" color="primary">
+              2. Mensagens de Media
+            </Typography>
+            <Typography className={classes.elementMargin} component="div">
+              <p>Seguem abaixo a lista de informações necessárias para envio das mensagens de texto:</p>
+              <b>Endpoint: </b> {getEndpoint()} <br />
+              <b>Método: </b> POST <br />
+              <b>Headers: </b> Authorization (Bearer token) e Content-Type (multipart/form-data) <br />
+              <b>FormData: </b> <br />
+              <ul>
+                <li>
+                  <b>number: </b> 5599999999999
+                </li>
+                <li>
+                  <b>medias: </b> arquivo
+                </li>
+              </ul>
+            </Typography>
+          </Grid>
+          <Grid style={{
+            display: "flex",
+            alignItems: "center",
+          }}>
+            <div>
+              <Typography className={classes.elementMargin}>
+                <b>Teste de Envio</b>
+              </Typography>
+              {renderFormMessageMedia()}
+            </div>
+          </Grid>
+        </div>
+      </Paper>
+    </div>
   );
 };
 

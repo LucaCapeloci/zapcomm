@@ -1,12 +1,11 @@
 import React, {
-  useState,
-  useEffect,
-  useReducer,
-  useCallback,
-  useContext,
-} from "react";
+    useState,
+    useEffect,
+    useReducer,
+    useCallback,
+    useContext,
+  } from "react";
 import { toast } from "react-toastify";
-
 import { makeStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import Button from "@material-ui/core/Button";
@@ -19,25 +18,20 @@ import IconButton from "@material-ui/core/IconButton";
 import SearchIcon from "@material-ui/icons/Search";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
-
-import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
-import EditIcon from "@material-ui/icons/Edit";
-import MainContainer from "../../components/MainContainer";
 import MainHeader from "../../components/MainHeader";
 import MainHeaderButtonsWrapper from "../../components/MainHeaderButtonsWrapper";
 import Title from "../../components/Title";
-
 import api from "../../services/api";
 import { i18n } from "../../translate/i18n";
 import TableRowSkeleton from "../../components/TableRowSkeleton";
 import TagModal from "../../components/TagModal";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import toastError from "../../errors/toastError";
-import { Chip } from "@material-ui/core";
-import { Tooltip } from "@material-ui/core";
+import { Chip, Collapse } from "@material-ui/core";
 import { SocketContext } from "../../context/Socket/SocketContext";
 import { AuthContext } from "../../context/Auth/AuthContext";
-
+import { DeleteRounded, EditRounded } from "@material-ui/icons";
+  
 const reducer = (state, action) => {
   if (action.type === "LOAD_TAGS") {
     const tags = action.payload;
@@ -81,19 +75,89 @@ const reducer = (state, action) => {
     return [];
   }
 };
-
+  
 const useStyles = makeStyles((theme) => ({
+  root: {
+    height: "100vh",
+    backgroundColor: theme.palette.background.main,
+    display: "flex",
+    flexDirection: "column",
+    gap: theme.spacing(4),
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(6),
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(6),
+    overflowY: "scroll",
+    ...theme.scrollbarStylesSoft
+  },
+  Table: {
+    borderCollapse:"separate",
+    borderSpacing:"0 1em",
+  },
   mainPaper: {
-    flex: 1,
     padding: theme.spacing(1),
     overflowY: "scroll",
-    ...theme.scrollbarStyles,
+    ...theme.scrollbarStylesSoft,      
+    backgroundColor:"inherit",
+    border:"none",
+  },
+  tableRow: {
+    backgroundColor: 'white',
+    borderRadius: theme.shape.borderRadius,
+    overflow: "hidden",
+  },
+  Cell_left: {
+    cursor: "pointer",
+    borderTopLeftRadius: theme.shape.borderRadius,
+    borderBottomLeftRadius: theme.shape.borderRadius,
+    overflow: "hidden",
+  },
+  cell: {
+    cursor: "pointer",
+  },
+  Cell_right: {
+    borderTopRightRadius: theme.shape.borderRadius,
+    borderBottomRightRadius: theme.shape.borderRadius,
+    overflow: "hidden",
+  },
+  textField: {
+    ...theme.textField,
   },
 }));
+  
+export const tagTextColor = (backgroundColor) => {
+  // Helper function to convert hex color to RGB
+  const hexToRgb = (hex) => {
+    // Remove the "#" if present
+    hex = hex.replace(/^#/, "");
+    // Convert 3-digit hex to 6-digit hex
+    if (hex.length === 3) {
+      hex = hex.split("").map(char => char + char).join("");
+    }
+    // Parse the hex color into RGB values
+    const bigint = parseInt(hex, 16);
+    return {
+      r: (bigint >> 16) & 255,
+      g: (bigint >> 8) & 255,
+      b: bigint & 255
+    };
+  };
+
+  // Convert background color to RGB format
+  const rgb = /^#/.test(backgroundColor) ? hexToRgb(backgroundColor) : backgroundColor;
+  const { r, g, b } = rgb;
+
+  // Calculate luminance based on RGB values
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+
+  console.log(backgroundColor);
+  // Return dark text for light backgrounds and light text for dark backgrounds
+  return luminance > 0.5 ? "#000000" : "#FFFFFF";
+};
 
 const Tags = () => {
-  const classes = useStyles();
 
+  const classes = useStyles();
   const { user } = useContext(AuthContext);
 
   const [loading, setLoading] = useState(false);
@@ -199,105 +263,113 @@ const Tags = () => {
     }
   };
 
-return (
-    <MainContainer>
-      <ConfirmationModal
-        title={deletingTag && `${i18n.t("tags.confirmationModal.deleteTitle")}`}
-        open={confirmModalOpen}
-        onClose={setConfirmModalOpen}
-        onConfirm={() => handleDeleteTag(deletingTag.id)}
-      >
-        {i18n.t("tags.confirmationModal.deleteMessage")}
-      </ConfirmationModal>
-      <TagModal
-        open={tagModalOpen}
-        onClose={handleCloseTagModal}
-        reload={fetchTags}
-        aria-labelledby="form-dialog-title"
-        tagId={selectedTag && selectedTag.id}
-      />
-      <MainHeader>
-        <Title>{i18n.t("tags.title")}</Title>
-        <MainHeaderButtonsWrapper>
-          <TextField
-            placeholder={i18n.t("contacts.searchPlaceholder")}
-            type="search"
-            value={searchParam}
-            onChange={handleSearch}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon style={{ color: "gray" }} />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOpenTagModal}
-          >
-            {i18n.t("tags.buttons.add")}
-          </Button>		  
-        </MainHeaderButtonsWrapper>
-      </MainHeader>
-      <Paper
-        className={classes.mainPaper}
-        variant="outlined"
-        onScroll={handleScroll}
-      >
-        <Table size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell align="center">{i18n.t("tags.table.name")}</TableCell>
-              <TableCell align="center">
-                {i18n.t("tags.table.tickets")}
-              </TableCell>
-              <TableCell align="center">
-                {i18n.t("tags.table.actions")}
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <>
-              {tags.map((tag) => (
-                <TableRow key={tag.id}>
-                  <TableCell align="center">
+  return (
+      <div className={classes.root}>
+        <MainHeader>
+          <Title>{i18n.t("tags.title")}</Title>
+          <MainHeaderButtonsWrapper>
+            <TextField
+              className={classes.textField}
+              margin="dense"
+              variant="outlined"
+              placeholder="Pesquisar"
+              type="search"
+              value={searchParam}
+              onChange={handleSearch}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon style={{ color: "grey"}} />
+                  </InputAdornment>
+                ),
+              }}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleOpenTagModal}
+            >
+              {i18n.t("tags.buttons.add")}
+            </Button>
+          </MainHeaderButtonsWrapper>
+        </MainHeader>
+        <Paper
+          className={classes.mainPaper}
+          variant="outlined"
+          onScroll={handleScroll}
+        >
+          <Table size="fit-content" className={classes.Table}>
+            <TableHead>
+              <TableRow>
+                <TableCell align="center">{i18n.t("tags.table.name")}</TableCell>
+                <TableCell align="center">{i18n.t("tags.table.tickets")}</TableCell>
+                <TableCell align="center">{i18n.t("tags.table.status")}</TableCell>
+                <TableCell align="center">{i18n.t("tags.table.actions")}</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              <>
+                {tags.map((tag) => (
+                  <TableRow key={tag.id} className={classes.tableRow}>
+                    <TableCell className={classes.Cell_left} align="center" onClick={() => handleEditTag(tag)}>
                     <Chip
-                      variant="outlined"
-                      style={{
-                        backgroundColor: tag.color,
-                        textShadow: "1px 1px 1px #000",
-                        color: "white",
-                      }}
-                      label={tag.name}
-                      size="small"
-                    />
-                  </TableCell>
-                  <TableCell align="center">{tag.ticketsCount}</TableCell>
-                  <TableCell align="center">
-                    <IconButton size="small" onClick={() => handleEditTag(tag)}>
-                      <EditIcon />
-                    </IconButton>
-
-                    <IconButton
-                      size="small"
-                      onClick={(e) => {
-                        setConfirmModalOpen(true);
-                        setDeletingTag(tag);
-                      }}
-                    >
-                      <DeleteOutlineIcon />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {loading && <TableRowSkeleton columns={4} />}
-            </>
-          </TableBody>
-        </Table>
-      </Paper>
-    </MainContainer>
+                        style={{
+                          backgroundColor: tag.color,
+                          color: tagTextColor(tag.color),
+                        }}
+                        label={tag.name}
+                        size="small"
+                      />
+                    </TableCell>
+                    <TableCell align="center" className={classes.cell} onClick={() => handleEditTag(tag)}>{tag.ticketsCount}</TableCell>
+                    <TableCell align="center" className={classes.cell} onClick={() => handleEditTag(tag)}>
+                        <Chip
+                            style={{
+                                backgroundColor: '#2B99431A',
+                                color:"green",
+                            }}
+                            label={i18n.t("tags.table.active")}
+                            size="small"
+                        />
+                    </TableCell>
+                    <TableCell className={classes.Cell_right} align="center">
+                      <IconButton size="small" onClick={() => handleEditTag(tag)}>
+                        <EditRounded />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        onClick={() => {
+                          setConfirmModalOpen(true);
+                          setDeletingTag(tag);
+                        }}
+                      >
+                        <DeleteRounded />
+                      </IconButton>
+        
+                    </TableCell>
+                  </TableRow>
+                ))}
+                {loading && <TableRowSkeleton columns={4} />}
+              </>
+            </TableBody>
+          </Table>
+        </Paper>
+        <ConfirmationModal
+          title={deletingTag && `${i18n.t("tags.confirmationModal.deleteTitle")}`}
+          open={confirmModalOpen}
+          onClose={setConfirmModalOpen}
+          onConfirm={() => handleDeleteTag(deletingTag.id)}
+        >
+          {i18n.t("tags.confirmationModal.deleteMessage")}
+        </ConfirmationModal>
+        <TagModal
+          open={tagModalOpen}
+          onClose={handleCloseTagModal}
+          reload={fetchTags}
+          aria-labelledby="form-dialog-title"
+          tagId={selectedTag && selectedTag.id}
+        />
+      </div>
   );
 };
 

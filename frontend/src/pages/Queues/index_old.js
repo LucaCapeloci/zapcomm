@@ -21,52 +21,18 @@ import Title from "../../components/Title";
 import { i18n } from "../../translate/i18n";
 import toastError from "../../errors/toastError";
 import api from "../../services/api";
-import { DeleteRounded, EditRounded } from "@material-ui/icons";
+import { DeleteOutline, Edit } from "@material-ui/icons";
 import QueueModal from "../../components/QueueModal";
 import { toast } from "react-toastify";
 import ConfirmationModal from "../../components/ConfirmationModal";
 import { SocketContext } from "../../context/Socket/SocketContext";
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    height: "100vh",
-    backgroundColor: theme.palette.background.main,
-    display: "flex",
-    flexDirection: "column",
-    gap: theme.spacing(4),
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(6),
-    paddingLeft: theme.spacing(4),
-    paddingRight: theme.spacing(6),
-    overflowY: "scroll",
-    ...theme.scrollbarStylesSoft,
-  },
-  Table: {
-    borderCollapse:"separate",
-    borderSpacing:"0 1em",
-  },
-  tableRow: {
-    backgroundColor: 'white',
-    borderRadius: theme.shape.borderRadius,
-    overflow: "hidden",
-  },
-  Cell_left: {
-    borderTopLeftRadius: theme.shape.borderRadius,
-    borderBottomLeftRadius: theme.shape.borderRadius,
-    overflow: "hidden",
-  },
-  Cell_right: {
-    borderTopRightRadius: theme.shape.borderRadius,
-    borderBottomRightRadius: theme.shape.borderRadius,
-    overflow: "hidden",
-  },
   mainPaper: {
     flex: 1,
     padding: theme.spacing(1),
     overflowY: "scroll",
-    ...theme.scrollbarStylesSoft,
-    backgroundColor:"inherit",
-    border:"none",
+    ...theme.scrollbarStyles,
   },
   customTableCell: {
     display: "flex",
@@ -195,7 +161,25 @@ const Queues = () => {
   };
 
   return (
-    <div className={classes.root}>
+    <MainContainer>
+      <ConfirmationModal
+        title={
+          selectedQueue &&
+          `${i18n.t("queues.confirmationModal.deleteTitle")} ${
+            selectedQueue.name
+          }?`
+        }
+        open={confirmModalOpen}
+        onClose={handleCloseConfirmationModal}
+        onConfirm={() => handleDeleteQueue(selectedQueue.id)}
+      >
+        {i18n.t("queues.confirmationModal.deleteMessage")}
+      </ConfirmationModal>
+      <QueueModal
+        open={queueModalOpen}
+        onClose={handleCloseQueueModal}
+        queueId={selectedQueue?.id}
+      />
       <MainHeader>
         <Title>{i18n.t("queues.title")}</Title>
         <MainHeaderButtonsWrapper>
@@ -209,7 +193,7 @@ const Queues = () => {
         </MainHeaderButtonsWrapper>
       </MainHeader>
       <Paper className={classes.mainPaper} variant="outlined">
-        <Table className={classes.Table}>
+        <Table size="small">
           <TableHead>
             <TableRow>
 			   <TableCell align="center">
@@ -235,17 +219,16 @@ const Queues = () => {
           <TableBody>
             <>
               {queues.map((queue) => (
-                <TableRow key={queue.id} className={classes.tableRow}>
-                  <TableCell align="center" className={classes.Cell_left}>{queue.id}</TableCell>
+                <TableRow key={queue.id}>
+				<TableCell align="center">{queue.id}</TableCell>
                   <TableCell align="center">{queue.name}</TableCell>
                   <TableCell align="center">
                     <div className={classes.customTableCell}>
                       <span
                         style={{
                           backgroundColor: queue.color,
-                          width: 33,
-                          height: 33,
-                          borderRadius: 100,
+                          width: 60,
+                          height: 20,
                           alignSelf: "center",
                         }}
                       />
@@ -273,12 +256,12 @@ const Queues = () => {
                       </Typography>
                     </div>
                   </TableCell>
-                  <TableCell align="center" className={classes.Cell_right}>
+                  <TableCell align="center">
                     <IconButton
                       size="small"
                       onClick={() => handleEditQueue(queue)}
                     >
-                      <EditRounded />
+                      <Edit />
                     </IconButton>
 
                     <IconButton
@@ -288,7 +271,7 @@ const Queues = () => {
                         setConfirmModalOpen(true);
                       }}
                     >
-                      <DeleteRounded />
+                      <DeleteOutline />
                     </IconButton>
                   </TableCell>
                 </TableRow>
@@ -298,25 +281,7 @@ const Queues = () => {
           </TableBody>
         </Table>
       </Paper>
-      <ConfirmationModal
-        title={
-          selectedQueue &&
-          `${i18n.t("queues.confirmationModal.deleteTitle")} ${
-            selectedQueue.name
-          }?`
-        }
-        open={confirmModalOpen}
-        onClose={handleCloseConfirmationModal}
-        onConfirm={() => handleDeleteQueue(selectedQueue.id)}
-      >
-        {i18n.t("queues.confirmationModal.deleteMessage")}
-      </ConfirmationModal>
-      <QueueModal
-        open={queueModalOpen}
-        onClose={handleCloseQueueModal}
-        queueId={selectedQueue?.id}
-      />
-    </div>
+    </MainContainer>
   );
 };
 

@@ -6,8 +6,6 @@ import { useHistory } from "react-router-dom";
 import { Link as RouterLink } from "react-router-dom";
 import { toast } from "react-toastify";
 import { Formik, Form, Field } from "formik";
-import usePlans from "../../hooks/usePlans";
-import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import TextField from "@material-ui/core/TextField";
@@ -16,52 +14,78 @@ import Grid from "@material-ui/core/Grid";
 import Box from "@material-ui/core/Box";
 import InputMask from 'react-input-mask';
 import {
-	FormControl,
-	InputLabel,
 	MenuItem,
 	Select,
 } from "@material-ui/core";
-import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
-import Typography from "@material-ui/core/Typography";
 import { makeStyles } from "@material-ui/core/styles";
-import Container from "@material-ui/core/Container";
 import logo from "../../assets/logo.png";
+import img from "../../assets/signin.png";
 import { i18n } from "../../translate/i18n";
 
 import { openApi } from "../../services/api";
 import toastError from "../../errors/toastError";
 import moment from "moment";
-const Copyright = () => {
-	return (
-		<Typography variant="body2" color="textSecondary" align="center">
-			{"Copyright © "}
-			<Link color="inherit" href="#">
-				PLW
-			</Link>{" "}
-		   {new Date().getFullYear()}
-			{"."}
-		</Typography>
-	);
-};
+import { Copyright } from "../Login/index.js";
+
+// const Copyright = () => {
+// 	return (
+// 		<Typography variant="body2" color="textSecondary" align="center">
+// 			{"Copyright © "}
+// 			<Link color="inherit" href="#">
+// 				PLW
+// 			</Link>{" "}
+// 		   {new Date().getFullYear()}
+// 			{"."}
+// 		</Typography>
+// 	);
+// };
 
 const useStyles = makeStyles(theme => ({
+	root: {
+		margin: "0",
+		padding: "0",
+		width: "100vw",
+		height: "100vh",
+		//background: "linear-gradient(to right, #682EE3 , #682EE3 , #682EE3)",
+		//backgroundImage: "url(https://i.imgur.com/CGby9tN.png)",
+		backgroundColor: theme.palette.background.main,
+		//backgroundRepeat: "no-repeat",
+		//backgroundSize: "100% 100%",
+		//backgroundPosition: "center",
+		display: "flex",
+		flexDirection: "row",
+		alignItems: "center",
+	},
 	paper: {
-		marginTop: theme.spacing(8),
+		backgroundColor: theme.palette.login,
 		display: "flex",
 		flexDirection: "column",
 		alignItems: "center",
+		justifyContent: "space-evenly",
+		textAlign: "center",
+		padding: "2em",
+		justifySelf: "left",
+		height: "100%",
+		width: "30%",
+		boxSizing: "border-box",
+		paddingTop: "3em",
+		paddingBottom: "3em",
 	},
-	avatar: {
-		margin: theme.spacing(1),
-		backgroundColor: theme.palette.secondary.main,
+	flexFill: {
+		display: "flex",
+		justifyContent: "center",
+		flexGrow: "1",
 	},
 	form: {
-		width: "100%",
-		marginTop: theme.spacing(3),
+		width: "100%", // Fix IE 11 issue.
+		marginTop: theme.spacing(1),
 	},
 	submit: {
 		margin: theme.spacing(3, 0, 2),
 	},
+	powered: {
+		color: "white"
+	}
 }));
 
 const UserSchema = Yup.object().shape({
@@ -83,9 +107,7 @@ const SignUp = () => {
 		companyId = params.companyId
 	}
 
-	const initialState = { name: "", email: "", phone: "", password: "", planId: "", };
 
-	const [user] = useState(initialState);
 	const dueDate = moment().add(3, "day").format();
 	const handleSignUp = async values => {
 		Object.assign(values, { recurrence: "MENSAL" });
@@ -102,20 +124,9 @@ const SignUp = () => {
 		}
 	};
 
-	const [plans, setPlans] = useState([]);
-	const { list: listPlans } = usePlans();
-
-	useEffect(() => {
-		async function fetchData() {
-			const list = await listPlans();
-			setPlans(list);
-		}
-		fetchData();
-	}, []);
-
 
 	return (
-		<Container component="main" maxWidth="xs">
+		<div className={classes.root}>
 			<CssBaseline />
 			<div className={classes.paper}>
 				<div>
@@ -126,7 +137,6 @@ const SignUp = () => {
 				</Typography>*/}
 				{/* <form className={classes.form} noValidate onSubmit={handleSignUp}> */}
 				<Formik
-					initialValues={user}
 					enableReinitialize={true}
 					validationSchema={UserSchema}
 					onSubmit={(values, actions) => {
@@ -207,24 +217,6 @@ const SignUp = () => {
 										required
 									/>
 								</Grid>
-								<Grid item xs={12}>
-									<InputLabel htmlFor="plan-selection">Plano</InputLabel>
-									<Field
-										as={Select}
-										variant="outlined"
-										fullWidth
-										id="plan-selection"
-										label="Plano"
-										name="planId"
-										required
-									>
-										{plans.map((plan, key) => (
-											<MenuItem key={key} value={plan.id}>
-												{plan.name} - Atendentes: {plan.users} - WhatsApp: {plan.connections} - Filas: {plan.queues} - R$ {plan.value}
-											</MenuItem>
-										))}
-									</Field>
-								</Grid>
 							</Grid>
 							<Button
 								type="submit"
@@ -235,24 +227,32 @@ const SignUp = () => {
 							>
 								{i18n.t("signup.buttons.submit")}
 							</Button>
-							<Grid container justify="flex-end">
+							<Grid container>
 								<Grid item>
+									Já possui uma conta?_
 									<Link
 										href="#"
 										variant="body2"
 										component={RouterLink}
 										to="/login"
 									>
-										{i18n.t("signup.buttons.login")}
+										Login
 									</Link>
 								</Grid>
 							</Grid>
 						</Form>
 					)}
 				</Formik>
+				<Box mt={5}><Copyright /></Box>
 			</div>
-			<Box mt={5}>{/* <Copyright /> */}</Box>
-		</Container>
+			<div className={classes.flexFill}>
+				<img
+					src={img}
+				>
+				</img>
+
+			</div>
+		</div>	
 	);
 };
 

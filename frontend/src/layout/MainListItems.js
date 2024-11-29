@@ -6,45 +6,51 @@ import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import Divider from "@material-ui/core/Divider";
-import { Badge, Collapse, List } from "@material-ui/core";
-import DashboardOutlinedIcon from "@material-ui/icons/DashboardOutlined";
-import WhatsAppIcon from "@material-ui/icons/WhatsApp";
-import SyncAltIcon from "@material-ui/icons/SyncAlt";
-import SettingsOutlinedIcon from "@material-ui/icons/SettingsOutlined";
-import PeopleAltOutlinedIcon from "@material-ui/icons/PeopleAltOutlined";
-import ContactPhoneOutlinedIcon from "@material-ui/icons/ContactPhoneOutlined";
-import AccountTreeOutlinedIcon from "@material-ui/icons/AccountTreeOutlined";
-import FlashOnIcon from "@material-ui/icons/FlashOn";
-import HelpOutlineIcon from "@material-ui/icons/HelpOutline";
-import CodeRoundedIcon from "@material-ui/icons/CodeRounded";
-import EventIcon from "@material-ui/icons/Event";
-import LocalOfferIcon from "@material-ui/icons/LocalOffer";
-import EventAvailableIcon from "@material-ui/icons/EventAvailable";
-import ExpandLessIcon from "@material-ui/icons/ExpandLess";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import PeopleIcon from "@material-ui/icons/People";
-import ListIcon from "@material-ui/icons/ListAlt";
-import AnnouncementIcon from "@material-ui/icons/Announcement";
-import ForumIcon from "@material-ui/icons/Forum";
-import LocalAtmIcon from '@material-ui/icons/LocalAtm';
-import RotateRight from "@material-ui/icons/RotateRight";
+import Badge from "@material-ui/core/Badge";
 import { i18n } from "../translate/i18n";
 import { WhatsAppsContext } from "../context/WhatsApp/WhatsAppsContext";
 import { AuthContext } from "../context/Auth/AuthContext";
-import LoyaltyRoundedIcon from '@material-ui/icons/LoyaltyRounded';
 import { Can } from "../components/Can";
 import { SocketContext } from "../context/Socket/SocketContext";
 import { isArray } from "lodash";
-import TableChartIcon from '@material-ui/icons/TableChart';
 import api from "../services/api";
-import BorderColorIcon from '@material-ui/icons/BorderColor';
-import ToDoList from "../pages/ToDoList/";
 import toastError from "../errors/toastError";
 import { makeStyles } from "@material-ui/core/styles";
-import { AllInclusive, AttachFile, BlurCircular, DeviceHubOutlined, Schedule } from '@material-ui/icons';
 import usePlans from "../hooks/usePlans";
-import Typography from "@material-ui/core/Typography";
 import useVersion from "../hooks/useVersion";
+import Box from "@material-ui/core/Box";
+
+import GridViewRoundedIcon from "@mui/icons-material/GridViewRounded";
+import ForumRoundedIcon from "@mui/icons-material/ForumRounded";
+import ViewKanbanIcon from "@mui/icons-material/ViewKanban";
+import BoltIcon from "@mui/icons-material/Bolt";
+import DoneAllRoundedIcon from "@mui/icons-material/DoneAllRounded";
+import PermContactCalendarRounded from "@mui/icons-material/PermContactCalendarRounded";
+import CalendarMonthRoundedIcon from "@mui/icons-material/CalendarMonthRounded";
+import LocalOfferRoundedIcon from "@mui/icons-material/LocalOfferRounded";
+import SendRoundedIcon from "@mui/icons-material/SendRounded";
+import HelpOutlineRoundedIcon from "@mui/icons-material/HelpOutlineRounded";
+import EventAvailableRoundedIcon from "@mui/icons-material/EventAvailableRounded";
+import InfoRoundedIcon from "@mui/icons-material/InfoRounded";
+import AllInclusiveRoundedIcon from "@mui/icons-material/AllInclusiveRounded";
+import IntegrationInstructionsRoundedIcon from "@mui/icons-material/IntegrationInstructionsRounded";
+import CloudRoundedIcon from "@mui/icons-material/CloudRounded";
+import CloudOffRoundedIcon from "@mui/icons-material/CloudOffRounded";
+import FolderRoundedIcon from "@mui/icons-material/FolderRounded";
+import ListAltRoundedIcon from "@mui/icons-material/ListAltRounded";
+import PeopleAltRoundedIcon from "@mui/icons-material/PeopleAltRounded";
+import CodeRoundedIcon from "@mui/icons-material/CodeRounded";
+import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
+
+// Account Button
+import {
+  MenuItem,
+  IconButton,
+  Menu,
+} from "@material-ui/core";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import UserModal from "../components/UserModal";
+import { useLocation } from "react-router-dom/cjs/react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   ListSubheader: {
@@ -52,12 +58,42 @@ const useStyles = makeStyles((theme) => ({
     marginTop: "-15px",
     marginBottom: "-10px",
   },
+  listItem: {
+    borderRadius: theme.spacing(.4),
+    transition: theme.transitions.create(["margin", "padding"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.short,
+    }),
+  },
+  activeListItem: {
+    "&:not(:first-child)": {
+      // paddingTop: theme.spacing(1),
+      marginTop: theme.spacing(2),
+    },
+    "&:not(:last-child)": {
+    // paddingBottom: theme.spacing(1),
+      marginBottom: theme.spacing(2),
+    },
+    transition: theme.transitions.create(["margin", "padding"], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.short,
+    }),
+    backgroundColor: theme.palette.secondaryLight.main,
+    "&:hover": {
+      backgroundColor: theme.palette.secondaryLightHover.main,
+    },
+  },
+  activeItem: {
+    color: theme.palette.light.main,
+  },
 }));
 
 
-function ListItemLink(props) {
-  const { icon, primary, to, className } = props;
-
+const ListItemLink = ({ icon, primary, to, className }) => {
+  const classes = useStyles();
+  const location = useLocation();
+  // console.log(location);
+  // console.log(to);
   const renderLink = React.useMemo(
     () =>
       React.forwardRef((itemProps, ref) => (
@@ -67,12 +103,10 @@ function ListItemLink(props) {
   );
 
   return (
-    <li>
-      <ListItem button dense component={renderLink} className={className}>
-        {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
-        <ListItemText primary={primary} />
-      </ListItem>
-    </li>
+    <ListItem button dense component={renderLink} className={`${className} ${ to == location.pathname ? classes.activeListItem : null} ${classes.listItem}`}>
+      {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
+      <ListItemText primary={primary} className={ to == location.pathname ? classes.activeItem : null} />
+    </ListItem>
   );
 }
 
@@ -132,19 +166,20 @@ const reducer = (state, action) => {
   }
 };
 
-const MainListItems = (props) => {
+const MainListItems = ({ drawerClose, collapsed}) => {
   const classes = useStyles();
-  const { drawerClose, collapsed } = props;
+  // Account buttton
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [userModalOpen, setUserModalOpen] = useState(false);
+
   const { whatsApps } = useContext(WhatsAppsContext);
   const { user, handleLogout } = useContext(AuthContext);
   const [connectionWarning, setConnectionWarning] = useState(false);
-  const [openCampaignSubmenu, setOpenCampaignSubmenu] = useState(false);
   const [showCampaigns, setShowCampaigns] = useState(false);
   const [showKanban, setShowKanban] = useState(false);
   const [showOpenAi, setShowOpenAi] = useState(false);
   const [showIntegrations, setShowIntegrations] = useState(false); const history = useHistory();
-  const [showSchedules, setShowSchedules] = useState(false);
-  const [showInternalChat, setShowInternalChat] = useState(false);
   const [showExternalApi, setShowExternalApi] = useState(false);
 
 
@@ -153,6 +188,7 @@ const MainListItems = (props) => {
   const [searchParam] = useState("");
   const [chats, dispatch] = useReducer(reducer, []);
   const { getPlanCompany } = usePlans();
+  const location = useLocation();
   
   const [version, setVersion] = useState(false);
   
@@ -160,6 +196,22 @@ const MainListItems = (props) => {
   const { getVersion } = useVersion();
 
   const socketManager = useContext(SocketContext);
+
+  // Account Button
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+    setMenuOpen(true);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+    setMenuOpen(false);
+  };
+
+  const handleOpenUserModal = () => {
+    setUserModalOpen(true);
+    handleCloseMenu();
+  };
 
   useEffect(() => {
     async function fetchVersion() {
@@ -185,8 +237,6 @@ const MainListItems = (props) => {
       setShowKanban(planConfigs.plan.useKanban);
       setShowOpenAi(planConfigs.plan.useOpenAi);
       setShowIntegrations(planConfigs.plan.useIntegrations);
-      setShowSchedules(planConfigs.plan.useSchedules);
-      setShowInternalChat(planConfigs.plan.useInternalChat);
       setShowExternalApi(planConfigs.plan.useExternalApi);
     }
     fetchData();
@@ -278,84 +328,82 @@ const MainListItems = (props) => {
   };
 
   const handleClickLogout = () => {
-    //handleCloseMenu();
+    handleCloseMenu();
     handleLogout();
+  };
+
+  const handleIconColor = (pathname) => {
+    if (pathname == location.pathname) {
+      return "#fff"
+    }
   };
 
   return (
     <div onClick={drawerClose}>
-      <Can
-        role={user.profile}
-        perform="dashboard:view"
-        yes={() => (
+      <div>
+        <Can
+          role={user.profile}
+          perform="dashboard:view"
+          yes={() => (
+            <ListItemLink
+              to="/"
+              primary="Dashboard"
+              icon={<GridViewRoundedIcon sx={{ color: handleIconColor("/") }} />}
+            />
+          )}
+        />
+        <ListItemLink
+          to="/tickets"
+          primary={i18n.t("mainDrawer.listItems.tickets")}
+          icon={<ForumRoundedIcon sx={{ color: handleIconColor("/tickets") }} />}
+        />
+        {showKanban && (
           <ListItemLink
-            to="/"
-            primary="Dashboard"
-            icon={<DashboardOutlinedIcon />}
+            to="/kanban"
+            primary={i18n.t("Kanban")}
+            icon={<ViewKanbanIcon sx={{ color: handleIconColor("/kanban") }} />}
           />
         )}
-      />
-
-      <ListItemLink
-        to="/tickets"
-        primary={i18n.t("mainDrawer.listItems.tickets")}
-        icon={<WhatsAppIcon />}
-      />
-	  
-	{showKanban && (  
-	  <ListItemLink
-        to="/kanban"
-        primary={i18n.t("Kanban")}
-        icon={<TableChartIcon />}
-      />
-	  )}
-
-
-      <ListItemLink
-        to="/quick-messages"
-        primary={i18n.t("mainDrawer.listItems.quickMessages")}
-        icon={<FlashOnIcon />}
-      />
-	  
-	  <ListItemLink
-        to="/todolist"
-        primary={i18n.t("Tarefas")}
-        icon={<BorderColorIcon />}
-      />
-
-      <ListItemLink
-        to="/contacts"
-        primary={i18n.t("mainDrawer.listItems.contacts")}
-        icon={<ContactPhoneOutlinedIcon />}
-      />
-
-      <ListItemLink
-        to="/schedules"
-        primary={i18n.t("mainDrawer.listItems.schedules")}
-        icon={<EventIcon />}
-      />
-
-      <ListItemLink
-        to="/tags"
-        primary={i18n.t("mainDrawer.listItems.tags")}
-        icon={<LocalOfferIcon />}
-      />
-
-      <ListItemLink
-        to="/chats"
-        primary={i18n.t("mainDrawer.listItems.chats")}
-        icon={
-          <Badge color="secondary" variant="dot" invisible={invisible}>
-            <ForumIcon />
-          </Badge>
-        }
-      />
-
-      <ListItemLink
-        to="/helps"
-        primary={i18n.t("mainDrawer.listItems.helps")}
-        icon={<HelpOutlineIcon />}
-      />
+        <ListItemLink
+          to="/quick-messages"
+          primary={i18n.t("mainDrawer.listItems.quickMessages")}
+          icon={<BoltIcon sx={{ color: handleIconColor("/quick-messages") }} />}
+        />
+        <ListItemLink
+          to="/todolist"
+          primary={i18n.t("Tarefas")}
+          icon={<DoneAllRoundedIcon sx={{ color: handleIconColor("/todolist") }} />}
+        />
+        <ListItemLink
+          to="/contacts"
+          primary="Contatos"
+          icon={<PermContactCalendarRounded sx={{ color: handleIconColor("/contacts") }} />}
+        />
+        <ListItemLink
+          to="/schedules"
+          primary={i18n.t("mainDrawer.listItems.schedules")}
+          icon={<CalendarMonthRoundedIcon sx={{ color: handleIconColor("/schedules") }} />}
+        />
+        <ListItemLink
+          to="/tags"
+          primary={i18n.t("mainDrawer.listItems.tags")}
+          icon={<LocalOfferRoundedIcon sx={{ color: handleIconColor("/tags") }} />}
+        />
+        <ListItemLink
+          to="/chats"
+          primary={i18n.t("mainDrawer.listItems.chats")}
+          icon={
+            <Badge color="secondary" variant="dot" invisible={invisible}>
+              <SendRoundedIcon sx={{ color: handleIconColor("/chats") }} />
+            </Badge>
+          }
+        />
+        <ListItemLink
+          to="/helps"
+          primary={i18n.t("mainDrawer.listItems.helps")}
+          icon={<HelpOutlineRoundedIcon sx={{ color: handleIconColor("/helps") }} />}
+        />
+      </div>
 
       <Can
         role={user.profile}
@@ -375,72 +423,28 @@ const MainListItems = (props) => {
               color="inherit">
               {i18n.t("mainDrawer.listItems.administration")}
             </ListSubheader>
-			
+
             {showCampaigns && (
               <>
-                <ListItem
-                  button
-                  onClick={() => setOpenCampaignSubmenu((prev) => !prev)}
-                >
-                  <ListItemIcon>
-                    <EventAvailableIcon />
-                  </ListItemIcon>
-                  <ListItemText
-                    primary={i18n.t("mainDrawer.listItems.campaigns")}
-                  />
-                  {openCampaignSubmenu ? (
-                    <ExpandLessIcon />
-                  ) : (
-                    <ExpandMoreIcon />
-                  )}
-                </ListItem>
-                <Collapse
-                  style={{ paddingLeft: 15 }}
-                  in={openCampaignSubmenu}
-                  timeout="auto"
-                  unmountOnExit
-                >
-                  <List component="div" disablePadding>
-                    <ListItem onClick={() => history.push("/campaigns")} button>
-                      <ListItemIcon>
-                        <ListIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Listagem" />
-                    </ListItem>
-                    <ListItem
-                      onClick={() => history.push("/contact-lists")}
-                      button
-                    >
-                      <ListItemIcon>
-                        <PeopleIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Listas de Contatos" />
-                    </ListItem>
-                    <ListItem
-                      onClick={() => history.push("/campaigns-config")}
-                      button
-                    >
-                      <ListItemIcon>
-                        <SettingsOutlinedIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Configurações" />
-                    </ListItem>
-                  </List>
-                </Collapse>
+                <ListItemLink
+                  to="/campaigns"
+                  primary={i18n.t("mainDrawer.listItems.campaigns")}
+                  icon={<EventAvailableRoundedIcon sx={{ color: handleIconColor("/campaigns") }} />}
+                />
               </>
             )}
             {user.super && (
               <ListItemLink
                 to="/announcements"
                 primary={i18n.t("mainDrawer.listItems.annoucements")}
-                icon={<AnnouncementIcon />}
+                icon={<InfoRoundedIcon sx={{ color: handleIconColor("/announcements") }} />}
               />
             )}
             {showOpenAi && (
               <ListItemLink
                 to="/prompts"
                 primary={i18n.t("mainDrawer.listItems.prompts")}
-                icon={<AllInclusive />}
+                icon={<AllInclusiveRoundedIcon sx={{ color: handleIconColor("/prompts") }} />}
               />
             )}
 
@@ -448,7 +452,7 @@ const MainListItems = (props) => {
               <ListItemLink
                 to="/queue-integration"
                 primary={i18n.t("mainDrawer.listItems.queueIntegration")}
-                icon={<DeviceHubOutlined />}
+                icon={<IntegrationInstructionsRoundedIcon sx={{ color: handleIconColor("/queue-integration") }} />}
               />
             )}
             <ListItemLink
@@ -456,65 +460,106 @@ const MainListItems = (props) => {
               primary={i18n.t("mainDrawer.listItems.connections")}
               icon={
                 <Badge badgeContent={connectionWarning ? "!" : 0} color="error">
-                  <SyncAltIcon />
+                  {!connectionWarning ? (<CloudRoundedIcon sx={{ color: handleIconColor("/connections") }} />) : (<CloudOffRoundedIcon sx={{ color: handleIconColor("/connections") }} />)}
                 </Badge>
               }
             />
             <ListItemLink
               to="/files"
               primary={i18n.t("mainDrawer.listItems.files")}
-              icon={<AttachFile />}
+              icon={<FolderRoundedIcon sx={{ color: handleIconColor("/files") }} />}
             />
             <ListItemLink
               to="/queues"
               primary={i18n.t("mainDrawer.listItems.queues")}
-              icon={<AccountTreeOutlinedIcon />}
+              icon={<ListAltRoundedIcon sx={{ color: handleIconColor("/queues") }} />}
             />
             <ListItemLink
               to="/users"
               primary={i18n.t("mainDrawer.listItems.users")}
-              icon={<PeopleAltOutlinedIcon />}
+              icon={<PeopleAltRoundedIcon sx={{ color: handleIconColor("/users") }} />}
             />
             {showExternalApi && (
               <>
                 <ListItemLink
                   to="/messages-api"
                   primary={i18n.t("mainDrawer.listItems.messagesAPI")}
-                  icon={<CodeRoundedIcon />}
+                  icon={<CodeRoundedIcon sx={{ color: handleIconColor("/messages-api") }} />}
                 />
               </>
             )}
-            <ListItemLink
+            {/*<ListItemLink
               to="/financeiro"
               primary={i18n.t("mainDrawer.listItems.financeiro")}
               icon={<LocalAtmIcon />}
-            />
+            />*/}
 
             <ListItemLink
               to="/settings"
               primary={i18n.t("mainDrawer.listItems.settings")}
-              icon={<SettingsOutlinedIcon />}
+              icon={<SettingsRoundedIcon sx={{ color: handleIconColor("/settings") }} />}
             />
-			
-			
+
+
             {!collapsed && <React.Fragment>
-              <Divider />
               {/* 
               // IMAGEM NO MENU
               <Hidden only={['sm', 'xs']}>
                 <img style={{ width: "100%", padding: "10px" }} src={logo} alt="image" />            
               </Hidden> 
               */}
-              <Typography style={{ fontSize: "12px", padding: "10px", textAlign: "right", fontWeight: "bold" }}>
-                {`6.0.0`}
-
-              </Typography>
             </React.Fragment>
             }
-			
+
           </>
         )}
       />
+      <Divider />
+      <ListItem button className={classes.listItem}>
+        <ListItemIcon>
+          <IconButton
+            aria-label="account of current user"
+            aria-controls="menu-appbar"
+            aria-haspopup="true"
+            onClick={handleMenu}
+            edge="start"
+          >
+            <AccountCircle />
+          </IconButton>
+        </ListItemIcon>
+        <Box onClick={() => setUserModalOpen(true)} flex={1}>
+          {user.name}
+        </Box>
+      </ListItem>
+
+      {/* ACCOUNT MODAL */}
+      <UserModal
+        open={userModalOpen}
+        onClose={() => setUserModalOpen(false)}
+        userId={user?.id}
+      />
+      <Menu
+        id="menu-appbar"
+        anchorEl={anchorEl}
+        getContentAnchorEl={null}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "right",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+        open={menuOpen}
+        onClose={handleCloseMenu}
+      >
+        <MenuItem onClick={handleOpenUserModal}>
+          {i18n.t("mainDrawer.appBar.user.profile")}
+        </MenuItem>
+        <MenuItem onClick={handleClickLogout}>
+          {i18n.t("mainDrawer.appBar.user.logout")}
+        </MenuItem>
+      </Menu>
     </div>
   );
 };

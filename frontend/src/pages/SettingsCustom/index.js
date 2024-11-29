@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import MainContainer from "../../components/MainContainer";
 import MainHeader from "../../components/MainHeader";
+import MainHeaderButtonsWrapper from "../../components/MainHeaderButtonsWrapper/index.js";
 import Title from "../../components/Title";
 import { makeStyles, Paper, Tabs, Tab } from "@material-ui/core";
 
@@ -8,11 +8,9 @@ import TabPanel from "../../components/TabPanel";
 
 import SchedulesForm from "../../components/SchedulesForm";
 import CompaniesManager from "../../components/CompaniesManager";
-import PlansManager from "../../components/PlansManager";
 import HelpsManager from "../../components/HelpsManager";
 import Options from "../../components/Settings/Options";
 
-import { i18n } from "../../translate/i18n.js";
 import { toast } from "react-toastify";
 
 import useCompanies from "../../hooks/useCompanies";
@@ -23,35 +21,46 @@ import OnlyForSuperUser from "../../components/OnlyForSuperUser";
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    flex: 1,
-    backgroundColor: theme.palette.background.paper,
+    display: "flex",
+    flexDirection: "column",
+    height: "100vh",
+    backgroundColor: theme.palette.background.main,
+    gap: theme.spacing(4),
+    paddingTop: theme.spacing(4),
+    paddingBottom: theme.spacing(6),
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(6),
+    overflowY: "scroll",
+    ...theme.scrollbarStylesSoft
+  },
+  subroot: {
+    display: "flex",
+    flexDirection: "column",
+    gap: theme.spacing(3),
+    flexGrow: 1,
   },
   mainPaper: {
-    ...theme.scrollbarStyles,
-    overflowY: "scroll",
+    backgroundColor: "inherit",
     flex: 1,
+    padding: theme.spacing(1),
+    overflowY: "scroll",
+    ...theme.scrollbarStylesSoft,
+  },
+  tabs: {
+    backgroundColor: theme.palette.light.main,
+    width: "fit-content",
+    ...theme.shape,
   },
   tab: {
-    backgroundColor: theme.palette.options,
-    borderRadius: 4,
+    zIndex: 1,
   },
   paper: {
-    ...theme.scrollbarStyles,
+    padding: theme.spacing(3),
     overflowY: "scroll",
-    padding: theme.spacing(2),
-    display: "flex",
-    alignItems: "center",
-    width: "100%",
+    ...theme.scrollbarStylesSoft,
   },
   container: {
-    width: "100%",
-    maxHeight: "100%",
-  },
-  control: {
-    padding: theme.spacing(1),
-  },
-  textfield: {
-    width: "100%",
+    flex: 1,
   },
 }));
 
@@ -150,85 +159,83 @@ const SettingsCustom = () => {
   };
 
   return (
-    <MainContainer className={classes.root}>
+    <div className={classes.root}>
       <MainHeader>
-        <Title>{i18n.t("settings.title")}</Title>
-      </MainHeader>
-      <Paper className={classes.mainPaper} elevation={1}>
-        <Tabs
-          value={tab}
-          indicatorColor="primary"
-          textColor="primary"
-          scrollButtons="on"
-          variant="scrollable"
-          onChange={handleTabChange}
-          className={classes.tab}
-        >
-          <Tab label="Opções" value={"options"} />
-          {schedulesEnabled && <Tab label="Horários" value={"schedules"} />}
-          {isSuper() ? <Tab label="Empresas" value={"companies"} /> : null}
-          {isSuper() ? <Tab label="Planos" value={"plans"} /> : null}
-          {isSuper() ? <Tab label="Ajuda" value={"helps"} /> : null}
-        </Tabs>
-        <Paper className={classes.paper} elevation={0}>
-          <TabPanel
-            className={classes.container}
+        <Title>Configurações</Title>
+        <MainHeaderButtonsWrapper>
+          <Tabs
             value={tab}
-            name={"schedules"}
-          >
-            <SchedulesForm
-              loading={loading}
-              onSubmit={handleSubmitSchedules}
-              initialValues={schedules}
-            />
-          </TabPanel>
-          <OnlyForSuperUser
-            user={currentUser}
-            yes={() => (
-              <TabPanel
-                className={classes.container}
-                value={tab}
-                name={"companies"}
-              >
-                <CompaniesManager />
-              </TabPanel>
-            )}
-          />
-          <OnlyForSuperUser
-            user={currentUser}
-            yes={() => (
-              <TabPanel
-                className={classes.container}
-                value={tab}
-                name={"plans"}
-              >
-                <PlansManager />
-              </TabPanel>
-            )}
-          />
-          <OnlyForSuperUser
-            user={currentUser}
-            yes={() => (
-              <TabPanel
-                className={classes.container}
-                value={tab}
-                name={"helps"}
-              >
-                <HelpsManager />
-              </TabPanel>
-            )}
-          />
-          <TabPanel className={classes.container} value={tab} name={"options"}>
-            <Options
-              settings={settings}
-              scheduleTypeChanged={(value) =>
-                setSchedulesEnabled(value === "company")
+            textColor="primary"
+            indicatorColor="primary"
+            onChange={handleTabChange}
+            className={classes.tabs}
+            TabIndicatorProps={{
+              style: {
+                height: "100%",
               }
-            />
-          </TabPanel>
-        </Paper>
+            }}
+          >
+            <Tab label="Opções" value={"options"} className={classes.tab} style={{
+              color: tab === "options" ? "#fff" : "inherit"
+            }}/>
+            {schedulesEnabled && <Tab label="Horários" value={"schedules"} className={classes.tab} style={{
+              color: tab === "schedules" ? "#fff" : "inherit"
+            }}/>}
+            {isSuper() ? <Tab label="Empresas" value={"companies"} className={classes.tab} style={{
+              color: tab === "companies" ? "#fff" : "inherit"
+            }}/> : null}
+            {isSuper() ? <Tab label="Ajuda" value={"helps"} className={classes.tab} style={{
+              color: tab === "helps" ? "#fff" : "inherit"
+            }}/> : null}
+          </Tabs>
+        </MainHeaderButtonsWrapper>
+      </MainHeader>
+      <Paper className={classes.paper} elevation={0}>
+        <TabPanel
+          className={classes.container}
+          value={tab}
+          name={"schedules"}
+        >
+          <SchedulesForm
+            loading={loading}
+            onSubmit={handleSubmitSchedules}
+            initialValues={schedules}
+          />
+        </TabPanel>
+        <OnlyForSuperUser
+          user={currentUser}
+          yes={() => (
+            <TabPanel
+              className={classes.container}
+              value={tab}
+              name={"companies"}
+            >
+              <CompaniesManager />
+            </TabPanel>
+          )}
+        />
+        <OnlyForSuperUser
+          user={currentUser}
+          yes={() => (
+            <TabPanel
+              className={classes.container}
+              value={tab}
+              name={"helps"}
+            >
+              <HelpsManager />
+            </TabPanel>
+          )}
+        />
+        <TabPanel className={classes.container} value={tab} name={"options"}>
+          <Options
+            settings={settings}
+            scheduleTypeChanged={(value) =>
+              setSchedulesEnabled(value === "company")
+            }
+          />
+        </TabPanel>
       </Paper>
-    </MainContainer>
+    </div>
   );
 };
 

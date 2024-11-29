@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { makeStyles, Paper, Typography, Modal } from "@material-ui/core";
+import { makeStyles, Paper, Typography, Modal, IconButton } from "@material-ui/core";
+import MainContainer from "../../components/MainContainer";
 import MainHeader from "../../components/MainHeader";
 import MainHeaderButtonsWrapper from "../../components/MainHeaderButtonsWrapper";
 import Title from "../../components/Title";
@@ -7,18 +8,9 @@ import { i18n } from "../../translate/i18n";
 import useHelps from "../../hooks/useHelps";
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    height: "100vh",
-    backgroundColor: theme.palette.background.main,
-    display: "flex",
-    flexDirection: "column",
-    gap: theme.spacing(4),
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(6),
-    paddingLeft: theme.spacing(4),
-    paddingRight: theme.spacing(6),
-    overflowY: "scroll",
-    ...theme.scrollbarStylesSoft
+  mainPaperContainer: {
+    overflowY: 'auto',
+    maxHeight: 'calc(100vh - 200px)',
   },
   mainPaper: {
     width: '100%',
@@ -30,22 +22,22 @@ const useStyles = makeStyles(theme => ({
   },
   helpPaper: {
     position: 'relative',
+    width: '100%',
+    minHeight: '340px',
+    padding: theme.spacing(2),
+    boxShadow: theme.shadows[3],
+    borderRadius: theme.spacing(1),
+    cursor: 'pointer',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
-    width: '100%',
-    minHeight: '340px',
     maxWidth: '340px',
-    boxShadow: "0 0 4px rgb(0,0,0,.3)",
-    cursor: 'pointer',
-    padding: theme.spacing(2),
-    ...theme.shape,
   },
   paperHover: {
     transition: 'transform 0.3s, box-shadow 0.3s',
     '&:hover': {
       transform: 'scale(1.03)',
-      boxShadow: `2px 2px 10px ${theme.palette.primary}`,
+      boxShadow: `0 0 8px`,
       color: theme.palette.primary.main,
     },
   },
@@ -90,7 +82,6 @@ const Helps = () => {
     async function fetchData() {
       const helps = await list();
       setRecords(helps);
-      console.log(helps);
     }
     fetchData();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -143,9 +134,9 @@ const Helps = () => {
   const renderHelps = () => {
     return (
       <>
-        <div className={classes.mainPaper}>
+        <div className={`${classes.mainPaper} ${classes.mainPaperContainer}`}>
           {records.length ? records.map((record, key) => (
-            <Paper key={key} className={`${classes.helpPaper} ${classes.paperHover}`} elevation={0} onClick={() => openVideoModal(record.video)}>
+            <Paper key={key} className={`${classes.helpPaper} ${classes.paperHover}`} onClick={() => openVideoModal(record.video)}>
               <img
                 src={`https://img.youtube.com/vi/${record.video}/mqdefault.jpg`}
                 alt="Thumbnail"
@@ -165,17 +156,16 @@ const Helps = () => {
   };
 
   return (
-    <div className={classes.root}>
+    <MainContainer>
       <MainHeader>
         <Title>{i18n.t("helps.title")} ({records.length})</Title>
         <MainHeaderButtonsWrapper></MainHeaderButtonsWrapper>
       </MainHeader>
-      <Title className={classes.tabletitle}><h3>{i18n.t("helps.videoTitle")}</h3></Title>
-      <Paper className={classes.mainPaper}>
+      <div className={classes.mainPaper}>
         {renderHelps()}
-        {renderVideoModal()}
-      </Paper>
-    </div>
+      </div>
+      {renderVideoModal()}
+    </MainContainer>
   );
 };
 

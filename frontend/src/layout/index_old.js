@@ -1,24 +1,46 @@
 import React, { useState, useContext, useEffect } from "react";
 import clsx from "clsx";
+import moment from "moment";
 import {
   makeStyles,
   Drawer,
   AppBar,
+  Toolbar,
   List,
+  Typography,
+  Divider,
+  MenuItem,
   IconButton,
+  Menu,
   useTheme,
+  useMediaQuery,
 } from "@material-ui/core";
 
+import MenuIcon from "@material-ui/icons/Menu";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import CachedIcon from "@material-ui/icons/Cached";
 
 import MainListItems from "./MainListItems";
+import NotificationsPopOver from "../components/NotificationsPopOver";
+import NotificationsVolume from "../components/NotificationsVolume";
 import UserModal from "../components/UserModal";
 import { AuthContext } from "../context/Auth/AuthContext";
 import BackdropLoading from "../components/BackdropLoading";
+import DarkMode from "../components/DarkMode";
+import { i18n } from "../translate/i18n";
 import toastError from "../errors/toastError";
+import AnnouncementsPopover from "../components/AnnouncementsPopover";
 
 import logo from "../assets/logo.png";
-import logoFav from "../assets/logoFav.png"
 import { SocketContext } from "../context/Socket/SocketContext";
+import ChatPopover from "../pages/Chat/ChatPopover";
+
+import { useDate } from "../hooks/useDate";
+
+import ColorModeContext from "./themeContext";
+import Brightness4Icon from '@material-ui/icons/Brightness4';
+import Brightness7Icon from '@material-ui/icons/Brightness7';
 
 const drawerWidth = 240;
 
@@ -33,7 +55,7 @@ const useStyles = makeStyles((theme) => ({
     '& .MuiButton-outlinedPrimary': {
       color: theme.mode === 'light' ? '#FFF' : '#FFF',
 	  //backgroundColor: theme.mode === 'light' ? '#682ee2' : '#682ee2',
-	    backgroundColor: theme.mode === 'light' ? theme.palette.primary.main : '#1c1c1c',
+	backgroundColor: theme.mode === 'light' ? theme.palette.primary.main : '#1c1c1c',
       //border: theme.mode === 'light' ? '1px solid rgba(0 124 102)' : '1px solid rgba(255, 255, 255, 0.5)',
     },
     '& .MuiTab-textColorPrimary.Mui-selected': {
@@ -50,9 +72,9 @@ const useStyles = makeStyles((theme) => ({
   },
   toolbarIcon: {
     display: "flex",
-    padding: theme.spacing(2),
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-between",
+    padding: "0 8px",
     minHeight: "48px",
     [theme.breakpoints.down("sm")]: {
       height: "48px"
@@ -103,7 +125,7 @@ const useStyles = makeStyles((theme) => ({
   drawerPaperClose: {
     overflowX: "hidden",
     transition: theme.transitions.create("width", {
-      easing: theme.transitions.easing.easeOut,
+      easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
     width: theme.spacing(7),
@@ -114,9 +136,13 @@ const useStyles = makeStyles((theme) => ({
       width: "100%"
     }
   },
+  appBarSpacer: {
+    minHeight: "48px",
+  },
   content: {
     flex: 1,
     overflow: "auto",
+
   },
   container: {
     paddingTop: theme.spacing(4),
@@ -130,26 +156,17 @@ const useStyles = makeStyles((theme) => ({
   },
   containerWithScroll: {
     flex: 1,
+    padding: theme.spacing(1),
     overflowY: "scroll",
-    paddingLeft: theme.spacing(1),
-    ...theme.scrollbarStylesSoft,
+    ...theme.scrollbarStyles,
   },
   NotificationsPopOver: {
     // color: theme.barraSuperior.secondary.main,
   },
   logo: {
+    width: "80%",
     height: "auto",
     maxWidth: 180,
-    [theme.breakpoints.down("sm")]: {
-      width: "auto",
-      height: "80%",
-      maxWidth: 180,
-    },
-    logo: theme.logo
-  },
-  logoFav: {
-    height: "auto",
-    maxWidth: 30,
     [theme.breakpoints.down("sm")]: {
       width: "auto",
       height: "80%",
@@ -162,6 +179,8 @@ const useStyles = makeStyles((theme) => ({
 const LoggedInLayout = ({ children, themeToggle }) => {
   const classes = useStyles();
   const [userModalOpen, setUserModalOpen] = useState(false);
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [menuOpen, setMenuOpen] = useState(false);
   const { handleLogout, loading } = useContext(AuthContext);
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [drawerVariant, setDrawerVariant] = useState("permanent");
@@ -169,6 +188,12 @@ const LoggedInLayout = ({ children, themeToggle }) => {
   const { user } = useContext(AuthContext);
 
   const theme = useTheme();
+  const { colorMode } = useContext(ColorModeContext);
+  const greaterThenSm = useMediaQuery(theme.breakpoints.up("sm"));
+
+  const [volume, setVolume] = useState(localStorage.getItem("volume") || 1);
+
+  const { dateToClient } = useDate();
 
 
   //################### CODIGOS DE TESTE #########################################
@@ -261,23 +286,46 @@ const LoggedInLayout = ({ children, themeToggle }) => {
     };
   }, [socketManager]);
 
+  const handleMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+    setMenuOpen(true);
+  };
+
+  const handleCloseMenu = () => {
+    setAnchorEl(null);
+    setMenuOpen(false);
+  };
+
+  const handleOpenUserModal = () => {
+    setUserModalOpen(true);
+    handleCloseMenu();
+  };
+
+  const handleClickLogout = () => {
+    handleCloseMenu();
+    handleLogout();
+  };
+
   const drawerClose = () => {
     if (document.body.offsetWidth < 600) {
       setDrawerOpen(false);
     }
   };
 
-  const handleLogo = () => {
-    if (!drawerOpen) {
-      return (
-        <img src={logo} className={classes.logo} alt="logo.png" />
-      )
-    } else {
-      return (
-        <img src={logoFav} className={classes.logoFav} alt="logo.png" />
-      )
-    };
-};
+  const handleRefreshPage = () => {
+    window.location.reload(false);
+  }
+
+  const handleMenuItemClick = () => {
+    const { innerWidth: width } = window;
+    if (width <= 600) {
+      setDrawerOpen(false);
+    }
+  };
+
+  const toggleColorMode = () => {
+    colorMode.toggleColorMode();
+  }
 
   if (loading) {
     return <BackdropLoading />;
@@ -287,23 +335,26 @@ const LoggedInLayout = ({ children, themeToggle }) => {
     <div className={classes.root}>
       <Drawer
         variant={drawerVariant}
-        className={!drawerOpen ? classes.drawerPaper : classes.drawerPaperClose}
+        className={drawerOpen ? classes.drawerPaper : classes.drawerPaperClose}
         classes={{
           paper: clsx(
             classes.drawerPaper,
-            drawerOpen && classes.drawerPaperClose
+            !drawerOpen && classes.drawerPaperClose
           ),
         }}
-        open={!drawerOpen}
-        onMouseEnter={() => setDrawerOpen(false)}
-        onMouseLeave={() => setDrawerOpen(true)}
+        open={drawerOpen}
       >
         <div className={classes.toolbarIcon}>
-          {handleLogo()}
+          <img src={logo} className={classes.logo} alt="logo" />
+          <IconButton onClick={() => setDrawerOpen(!drawerOpen)}>
+            <ChevronLeftIcon />
+          </IconButton>
         </div>
+        <Divider />
         <List className={classes.containerWithScroll}>
-          <MainListItems drawerClose={drawerClose} collapsed={drawerOpen}/>
+          <MainListItems drawerClose={drawerClose} collapsed={!drawerOpen} />
         </List>
+        <Divider />
       </Drawer>
       <UserModal
         open={userModalOpen}
@@ -315,8 +366,101 @@ const LoggedInLayout = ({ children, themeToggle }) => {
         className={clsx(classes.appBar, drawerOpen && classes.appBarShift)}
         color="primary"
       >
+        <Toolbar variant="dense" className={classes.toolbar}>
+          <IconButton
+            edge="start"
+            variant="contained"
+            aria-label="open drawer"
+            onClick={() => setDrawerOpen(!drawerOpen)}
+            className={clsx(
+              classes.menuButton,
+              drawerOpen && classes.menuButtonHidden
+            )}
+          >
+            <MenuIcon />
+          </IconButton>
+
+          <Typography
+            component="h2"
+            variant="h6"
+            color="inherit"
+            noWrap
+            className={classes.title}
+          >
+            {/* {greaterThenSm && user?.profile === "admin" && getDateAndDifDays(user?.company?.dueDate).difData < 7 ? ( */}
+            {greaterThenSm && user?.profile === "admin" && user?.company?.dueDate ? (
+              <>
+                Olá <b>{user.name}</b>, Bem vindo a <b>{user?.company?.name}</b>! (Ativo até {dateToClient(user?.company?.dueDate)})
+              </>
+            ) : (
+              <>
+                Olá  <b>{user.name}</b>, Bem vindo a <b>{user?.company?.name}</b>!
+              </>
+            )}
+          </Typography>
+
+          <IconButton edge="start" onClick={toggleColorMode}>
+            {theme.mode === 'dark' ? <Brightness7Icon style={{ color: "white" }} /> : <Brightness4Icon style={{ color: "white" }} />}
+          </IconButton>
+
+          <NotificationsVolume
+            setVolume={setVolume}
+            volume={volume}
+          />
+
+          <IconButton
+            onClick={handleRefreshPage}
+            aria-label={i18n.t("mainDrawer.appBar.refresh")}
+            color="inherit"
+          >
+            <CachedIcon style={{ color: "white" }} />
+          </IconButton>
+
+          {user.id && <NotificationsPopOver volume={volume} />}
+
+          <AnnouncementsPopover />
+
+          <ChatPopover />
+
+          <div>
+            <IconButton
+              aria-label="account of current user"
+              aria-controls="menu-appbar"
+              aria-haspopup="true"
+              onClick={handleMenu}
+              variant="contained"
+              style={{ color: "white" }}
+            >
+              <AccountCircle />
+            </IconButton>
+            <Menu
+              id="menu-appbar"
+              anchorEl={anchorEl}
+              getContentAnchorEl={null}
+              anchorOrigin={{
+                vertical: "bottom",
+                horizontal: "right",
+              }}
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={menuOpen}
+              onClose={handleCloseMenu}
+            >
+              <MenuItem onClick={handleOpenUserModal}>
+                {i18n.t("mainDrawer.appBar.user.profile")}
+              </MenuItem>
+              <MenuItem onClick={handleClickLogout}>
+                {i18n.t("mainDrawer.appBar.user.logout")}
+              </MenuItem>
+            </Menu>
+          </div>
+        </Toolbar>
       </AppBar>
       <main className={classes.content}>
+        <div className={classes.appBarSpacer} />
+
         {children ? children : null}
       </main>
     </div>
