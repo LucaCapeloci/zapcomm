@@ -25,10 +25,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: "column",
     position: "relative",
     flex: 1,
-    height: "calc(100% - 58px)",
-    overflow: "hidden",
+    height: "calc(100%)", //Retirei - 58px do calc
+    // overflow: "hidden",
     borderRadius: 0,
-    backgroundColor: theme.palette.boxlist, //DARK MODE PLW DESIGN//
+    // backgroundColor: theme.palette.boxlist, //DARK MODE PLW DESIGN//
   },
   chatList: {
     display: "flex",
@@ -41,6 +41,12 @@ const useStyles = makeStyles((theme) => ({
   listItem: {
     cursor: "pointer",
   },
+  acoes: {
+    color: "#0C2C54",
+    "&:hover": {
+      color: "#3c5676",
+    },
+  }
 }));
 
 export default function ChatList({
@@ -153,6 +159,7 @@ export default function ChatList({
                         aria-label="delete"
                         size="small"
                         style={{ marginRight: 5 }}
+                        className={classes.acoes}
                       >
                         <EditIcon />
                       </IconButton>
@@ -164,6 +171,7 @@ export default function ChatList({
                         edge="end"
                         aria-label="delete"
                         size="small"
+                        className={classes.acoes}
                       >
                         <DeleteIcon />
                       </IconButton>

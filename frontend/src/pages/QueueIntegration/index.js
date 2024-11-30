@@ -45,6 +45,9 @@ import { AuthContext } from "../../context/Auth/AuthContext";
 import usePlans from "../../hooks/usePlans";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 
+import Typography from "@material-ui/core/Typography";
+import InputBase from "@material-ui/core/InputBase";
+
 const reducer = (state, action) => {
   if (action.type === "LOAD_INTEGRATIONS") {
     const queueIntegration = action.payload;
@@ -101,6 +104,54 @@ const useStyles = makeStyles((theme) => ({
     width: "140px",
     height: "40px",
     borderRadius: 4
+  },
+  divBody: {
+    flex: 1,
+    padding: theme.spacing(1),
+    height: `calc(100% - 48px)`,
+    backgroundColor: "#FFFFFF",
+  },
+  serachInputWrapper: {
+    border: "solid 1px #828282",
+    flex: 1,
+    display: "flex",
+    borderRadius: 40,
+    padding: 4,
+    marginRight: theme.spacing(1),
+    width: '70%',
+    height: '48px',
+  },
+
+  searchIcon: {
+    color: "grey",
+    marginLeft: 6,
+    marginRight: 6,
+    alignSelf: "center",
+  },
+
+  searchInput: {
+    flex: 1,
+    border: "none",
+    borderRadius: 30,
+  },
+  AgrupamentoDoPesquisarENovo: {
+    paddingTop: "7px",
+    paddingBottom: "8px",
+    display: "inline-flex",
+    width: "95%"
+  },
+  BotaoAdicionar: {
+    borderRadius: "40px",
+    padding: "10px 32px",
+    justifyContent: "center",
+    alignItems: "center",
+    border: "1px solid var(--logo-bg, #001C27)"
+  },
+  acoes: {
+    color: "#0C2C54",
+    "&:hover": {
+      color: "#3c5676",
+    },
   },
 }));
 
@@ -225,7 +276,77 @@ const QueueIntegration = () => {
   };
 
   return (
-    <MainContainer>
+    <div className={classes.divBody}>
+      <h1 style={{ margin: "0" }}><b>{i18n.t("queueIntegration.title")} ({queueIntegration.length})</b></h1>
+      <Typography
+        component="subtitle1"
+        variant="body1"
+        style={{ fontFamily: 'Inter Regular, sans-serif', color: '#828282' }} // Aplicando a nova fonte
+      >
+        {"Adicione, edite e exclua seus bots e projetos."}
+      </Typography>
+      <div>
+
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            width: "100%",
+            flexWrap: "nowrap",
+          }}
+        >
+          <div
+            style={{
+              flex: "1 1 auto",
+              display: "flex",
+              alignItems: "center",
+              maxWidth: "80%",
+            }}
+            className={classes.serachInputWrapper}>
+            <SearchIcon className={classes.searchIcon} />
+            <InputBase
+              className={classes.searchInput}
+              placeholder={i18n.t("queueIntegration.searchPlaceholder")}
+              type="search"
+              value={searchParam}
+              onChange={handleSearch}
+            // InputProps={{
+            //   startAdornment: (
+            //     <InputAdornment position="start">
+            //       <SearchIcon color="secondary" />
+            //     </InputAdornment>
+            //   ),
+            // }}
+            />
+          </div>
+          <div
+            style={{
+              width: "1px",
+              height: "43px",
+              background: "#BDBDBD",
+            }}
+          ></div>
+
+          <div
+            style={{
+              flex: "0 0 auto",
+            }}
+          >
+            <MainHeaderButtonsWrapper>
+              <Button
+                className={classes.BotaoAdicionar}
+                variant="contained"
+                color="primary"
+                onClick={handleOpenUserModal}
+              >
+                + {i18n.t("queueIntegration.buttons.add")}
+              </Button>
+            </MainHeaderButtonsWrapper>
+          </div>
+        </div>
+      </div>
+      {/* <MainContainer> */}
       <ConfirmationModal
         title={
           deletingUser &&
@@ -244,7 +365,7 @@ const QueueIntegration = () => {
         aria-labelledby="form-dialog-title"
         integrationId={selectedIntegration && selectedIntegration.id}
       />
-      <MainHeader>
+      {/* <MainHeader>
         <Title>{i18n.t("queueIntegration.title")} ({queueIntegration.length})</Title>
         <MainHeaderButtonsWrapper>
           <TextField
@@ -268,63 +389,79 @@ const QueueIntegration = () => {
             {i18n.t("queueIntegration.buttons.add")}
           </Button>
         </MainHeaderButtonsWrapper>
-      </MainHeader>
+      </MainHeader> */}
       <Paper
-        className={classes.mainPaper}
-        variant="outlined"
+        // className={classes.mainPaper}
+        // variant="outlined"
         onScroll={handleScroll}
       >
         <Table size="small">
           <TableHead>
             <TableRow>
               <TableCell padding="checkbox"></TableCell>
-              <TableCell align="center">{i18n.t("queueIntegration.table.id")}</TableCell>
-              <TableCell align="center">{i18n.t("queueIntegration.table.name")}</TableCell>
+              <TableCell align="center"><b>{i18n.t("queueIntegration.table.id")}</b></TableCell>
+              <TableCell align="center"><b>{i18n.t("queueIntegration.table.name")}</b></TableCell>
+              <TableCell align="center"><b>{"Ações"}</b></TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          {queueIntegration.length > 0 ? (
             <>
-              {queueIntegration.map((integration) => (
-                <TableRow key={integration.id}>
-                  <TableCell >
-                    {integration.type === "dialogflow" && (<Avatar 
-                      src={dialogflow} className={classes.avatar} />)}
-                    {integration.type === "n8n" && (<Avatar
-                      src={n8n} className={classes.avatar} />)}
-                    {integration.type === "webhook" && (<Avatar
-                      src={webhooks} className={classes.avatar} />)}
-                    {integration.type === "typebot" && (<Avatar
-                      src={typebot} className={classes.avatar} />)}
-                  </TableCell>
+              <TableBody>
+                <>
+                  {queueIntegration.map((integration) => (
+                    <TableRow key={integration.id}>
+                      <TableCell >
+                        {integration.type === "dialogflow" && (<Avatar
+                          src={dialogflow} className={classes.avatar} />)}
+                        {integration.type === "n8n" && (<Avatar
+                          src={n8n} className={classes.avatar} />)}
+                        {integration.type === "webhook" && (<Avatar
+                          src={webhooks} className={classes.avatar} />)}
+                        {integration.type === "typebot" && (<Avatar
+                          src={typebot} className={classes.avatar} />)}
+                      </TableCell>
 
-                  <TableCell align="center">{integration.id}</TableCell>
-                  <TableCell align="center">{integration.name}</TableCell>
-                  <TableCell align="center">
-                    <IconButton
-                      size="small"
-                      onClick={() => handleEditIntegration(integration)}
-                    >
-                      <Edit color="secondary" />
-                    </IconButton>
+                      <TableCell align="center">{integration.id}</TableCell>
+                      <TableCell align="center">{integration.name}</TableCell>
+                      <TableCell align="center">
+                        <IconButton
+                          size="small"
+                          onClick={() => handleEditIntegration(integration)}
+                          className={classes.acoes}
+                        >
+                          <Edit />
+                        </IconButton>
 
-                    <IconButton
-                      size="small"
-                      onClick={(e) => {
-                        setConfirmModalOpen(true);
-                        setDeletingUser(integration);
-                      }}
-                    >
-                      <DeleteOutline color="secondary" />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {loading && <TableRowSkeleton columns={7} />}
+                        <IconButton
+                          size="small"
+                          onClick={(e) => {
+                            setConfirmModalOpen(true);
+                            setDeletingUser(integration);
+                          }}
+                          className={classes.acoes}
+                        >
+                          <DeleteOutline />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {loading && <TableRowSkeleton columns={7} />}
+                </>
+              </TableBody>
             </>
-          </TableBody>
+          ) : (
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan="7" align="center">
+                  Nenhuma integração a ser carregada no momento
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          )}
         </Table>
       </Paper>
-    </MainContainer>
+      {/* </MainContainer> */}
+    </div>
   );
 };
 

@@ -16,6 +16,7 @@ import WhatsAppIcon from "@material-ui/icons/WhatsApp";
 import SearchIcon from "@material-ui/icons/Search";
 import TextField from "@material-ui/core/TextField";
 import InputAdornment from "@material-ui/core/InputAdornment";
+import InputBase from "@material-ui/core/InputBase";
 
 import IconButton from "@material-ui/core/IconButton";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";
@@ -36,7 +37,9 @@ import { Can } from "../../components/Can";
 import NewTicketModal from "../../components/NewTicketModal";
 import { SocketContext } from "../../context/Socket/SocketContext";
 
-import {CSVLink} from "react-csv";
+import { CSVLink } from "react-csv";
+
+import Typography from "@material-ui/core/Typography";
 
 const reducer = (state, action) => {
   if (action.type === "LOAD_CONTACTS") {
@@ -89,6 +92,59 @@ const useStyles = makeStyles((theme) => ({
     overflowY: "scroll",
     ...theme.scrollbarStyles,
   },
+
+  divBody: {
+    flex: 1,
+    padding: theme.spacing(1),
+    height: `calc(100% - 48px)`,
+    backgroundColor: "#FFFFFF",
+  },
+
+  Botoes: {
+    borderRadius: "40px",
+    padding: "10px 32px",
+    justifyContent: "center",
+    alignItems: "center",
+    border: "1px solid var(--logo-bg, #001C27)"
+  },
+
+  Tabela: {
+    fontFamily: 'Inter Tight, sans-serif',
+    color: 'black'
+  },
+
+  serachInputWrapper: {
+    border: "solid 1px #828282",
+    flex: 1,
+    display: "flex",
+    borderRadius: 40,
+    padding: 4,
+    marginRight: theme.spacing(1),
+    width: '70%',
+    height: '48px',
+  },
+
+  searchIcon: {
+    color: "grey",
+    marginLeft: 6,
+    marginRight: 6,
+    alignSelf: "center",
+  },
+
+  searchInput: {
+    flex: 1,
+    border: "none",
+    borderRadius: 30,
+  },
+
+  acoes: {
+    color: "#0C2C54",
+    "&:hover": {
+      color: "#3c5676",
+    },
+    width: "35px", // Reduzido para o tamanho desejado
+    height: "30px",
+  }
 }));
 
 const Contacts = () => {
@@ -153,7 +209,7 @@ const Contacts = () => {
     return () => {
       socket.disconnect();
     };
-  }, [ socketManager]);
+  }, [socketManager]);
 
   const handleSearch = (event) => {
     setSearchParam(event.target.value.toLowerCase());
@@ -231,7 +287,16 @@ const Contacts = () => {
   };
 
   return (
-    <MainContainer className={classes.mainContainer}>
+    <div className={classes.divBody}>
+      <h1 style={{ margin: "0" }}><b>Contatos</b></h1>
+      <Typography
+        component="subtitle1"
+        variant="body1"
+        style={{ fontFamily: 'Inter Regular, sans-serif', color: '#828282' }} // Aplicando a nova fonte
+      >
+        {"Adicione e gerencie seus contatos"}
+      </Typography>
+      {/* <MainContainer> */}
       <NewTicketModal
         modalOpen={newTicketModalOpen}
         initialContact={contactTicket}
@@ -248,9 +313,8 @@ const Contacts = () => {
       <ConfirmationModal
         title={
           deletingContact
-            ? `${i18n.t("contacts.confirmationModal.deleteTitle")} ${
-                deletingContact.name
-              }?`
+            ? `${i18n.t("contacts.confirmationModal.deleteTitle")} ${deletingContact.name
+            }?`
             : `${i18n.t("contacts.confirmationModal.importTitlte")}`
         }
         open={confirmOpen}
@@ -265,116 +329,174 @@ const Contacts = () => {
           ? `${i18n.t("contacts.confirmationModal.deleteMessage")}`
           : `${i18n.t("contacts.confirmationModal.importMessage")}`}
       </ConfirmationModal>
-      <MainHeader>
-        <Title>{i18n.t("contacts.title")}</Title>
-        <MainHeaderButtonsWrapper>
-          <TextField
+      {/* <MainHeader> */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          minWidth: "37%",
+          width: "97%",
+          flexWrap: "nowrap",
+        }}
+      >
+
+        <div
+          style={{
+            flex: "1 1 auto",
+            display: "flex",
+            alignItems: "center",
+            minWidth: "30%",
+            maxWidth: "80%",
+          }}
+          className={classes.serachInputWrapper}>
+          <SearchIcon className={classes.searchIcon} />
+          <InputBase
+            className={classes.searchInput}
             placeholder={i18n.t("contacts.searchPlaceholder")}
             type="search"
             value={searchParam}
             onChange={handleSearch}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon style={{ color: "gray" }} />
-                </InputAdornment>
-              ),
-            }}
           />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={(e) => setConfirmOpen(true)}
-          >
-            {i18n.t("contacts.buttons.import")}
-          </Button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOpenContactModal}
-          >
-            {i18n.t("contacts.buttons.add")}
-          </Button>
+        </div>
 
-         <CSVLink style={{ textDecoration:'none'}} separator=";" filename={'contatos.csv'} data={contacts.map((contact) => ({ name: contact.name, number: contact.number, email: contact.email }))}>
-          <Button	variant="contained" color="primary"> 
-          EXPORTAR CONTATOS 
-          </Button>
-          </CSVLink>		  
+        <div
+          style={{
+            width: "1px",
+            height: "43px",
+            background: "#BDBDBD",
+          }}
+        ></div>
 
-        </MainHeaderButtonsWrapper>
-      </MainHeader>
+        <div
+          style={{
+            flex: "0 0 auto",
+          }}
+        >
+          <MainHeaderButtonsWrapper style={{}}>
+            <Button
+              className={classes.Botoes}
+              variant="contained"
+              color="primary"
+              onClick={(e) => setConfirmOpen(true)}
+            >
+              {i18n.t("contacts.buttons.import")} {document.body.offsetWidth < 600 ? '' : 'CONTATOS'}
+            </Button>
+            <Button
+              className={classes.Botoes}
+              variant="contained"
+              color="primary"
+              onClick={handleOpenContactModal}
+            >
+              {i18n.t("contacts.buttons.add")} {document.body.offsetWidth < 600 ? '' : 'CONTATOS'}
+            </Button>
+
+            <CSVLink style={{ textDecoration: 'none' }} separator=";" filename={'contatos.csv'} data={contacts.map((contact) => ({ name: contact.name, number: contact.number, email: contact.email }))}>
+              <Button variant="contained" color="primary" className={classes.Botoes}>
+                EXPORTAR {document.body.offsetWidth < 600 ? '' : 'CONTATOS'}
+              </Button>
+            </CSVLink>
+          </MainHeaderButtonsWrapper>
+        </div>
+      </div>
+      {/* </MainHeader> */}
       <Paper
-        className={classes.mainPaper}
-        variant="outlined"
+        // className={classes.mainPaper}
+        // variant="outlined"
         onScroll={handleScroll}
       >
         <Table size="small">
           <TableHead>
             <TableRow>
               <TableCell padding="checkbox" />
-              <TableCell>{i18n.t("contacts.table.name")}</TableCell>
-              <TableCell align="center">
-                {i18n.t("contacts.table.whatsapp")}
+              <TableCell className={classes.Tabela}>
+                <b>
+                  {i18n.t("contacts.table.name")}
+                </b>
               </TableCell>
-              <TableCell align="center">
-                {i18n.t("contacts.table.email")}
+              <TableCell align="center" className={classes.Tabela}>
+                <b>
+                  {i18n.t("contacts.table.whatsapp")}
+                </b>
               </TableCell>
-              <TableCell align="center">
-                {i18n.t("contacts.table.actions")}
+              <TableCell align="center" className={classes.Tabela}>
+                <b>
+                  {i18n.t("contacts.table.email")}
+                </b>
+              </TableCell>
+              <TableCell align="center" className={classes.Tabela}>
+                <b>
+                  {i18n.t("contacts.table.actions")}
+                </b>
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          {contacts.length > 0 ? (
             <>
-              {contacts.map((contact) => (
-                <TableRow key={contact.id}>
-                  <TableCell style={{ paddingRight: 0 }}>
-                    {<Avatar src={contact.profilePicUrl} />}
-                  </TableCell>
-                  <TableCell>{contact.name}</TableCell>
-                  <TableCell align="center">{contact.number}</TableCell>
-                  <TableCell align="center">{contact.email}</TableCell>
-                  <TableCell align="center">
-                    <IconButton
-                      size="small"
-                      onClick={() => {
-                        setContactTicket(contact);
-                        setNewTicketModalOpen(true);
-                      }}
-                    >
-                      <WhatsAppIcon />
-                    </IconButton>
-                    <IconButton
-                      size="small"
-                      onClick={() => hadleEditContact(contact.id)}
-                    >
-                      <EditIcon />
-                    </IconButton>
-                    <Can
-                      role={user.profile}
-                      perform="contacts-page:deleteContact"
-                      yes={() => (
+              <TableBody>
+                <>
+                  {contacts.map((contact) => (
+                    <TableRow key={contact.id}>
+                      <TableCell style={{ paddingRight: 0 }}>
+                        {<Avatar src={contact.profilePicUrl} />}
+                      </TableCell>
+                      <TableCell>{contact.name}</TableCell>
+                      <TableCell align="center">{contact.number}</TableCell>
+                      <TableCell align="center">{contact.email}</TableCell>
+                      <TableCell align="center">
                         <IconButton
                           size="small"
-                          onClick={(e) => {
-                            setConfirmOpen(true);
-                            setDeletingContact(contact);
+                          onClick={() => {
+                            setContactTicket(contact);
+                            setNewTicketModalOpen(true);
                           }}
+                          className={classes.acoes}
                         >
-                          <DeleteOutlineIcon />
+                          <WhatsAppIcon />
                         </IconButton>
-                      )}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
-              {loading && <TableRowSkeleton avatar columns={3} />}
+                        <IconButton
+                          size="small"
+                          onClick={() => hadleEditContact(contact.id)}
+                          className={classes.acoes}
+                        >
+                          <EditIcon />
+                        </IconButton>
+                        <Can
+                          role={user.profile}
+                          perform="contacts-page:deleteContact"
+                          yes={() => (
+                            <IconButton
+                              size="small"
+                              onClick={(e) => {
+                                setConfirmOpen(true);
+                                setDeletingContact(contact);
+                              }}
+                              className={classes.acoes}
+                            >
+                              <DeleteOutlineIcon />
+                            </IconButton>
+                          )}
+                        />
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {loading && <TableRowSkeleton avatar columns={3} />}
+                </>
+              </TableBody>
             </>
-          </TableBody>
+          ) : (
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan="5" align="center">
+                  Nenhum contato a ser carregado no momento
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          )}
         </Table>
       </Paper>
-    </MainContainer>
+      {/* </MainContainer> */}
+    </div>
   );
 };
 

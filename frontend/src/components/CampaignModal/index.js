@@ -44,7 +44,8 @@ const useStyles = makeStyles((theme) => ({
   },
 
   tabmsg: {
-    backgroundColor: theme.palette.campaigntab,
+    backgroundColor: "#0C2C54",
+    color: "white",
   },
 
   textField: {
@@ -60,6 +61,25 @@ const useStyles = makeStyles((theme) => ({
 
   btnWrapper: {
     position: "relative",
+    backgroundColor: "#34d3a3", // Cor verde para o botão
+    color: "#0c2c54",
+    borderRadius: "20px", // Botão com bordas arredondadas
+    padding: theme.spacing(1, 4),
+    "&:hover": {
+      backgroundColor: "#34d3a3",
+    },
+  },
+
+  btnWrapper2: {
+    position: "relative",
+    borderRadius: "20px",
+    padding: theme.spacing(1, 2),
+  },
+
+  dialogActions: {
+    justifyContent: "right", 
+    paddingBottom: theme.spacing(2),
+    paddingRight: theme.spacing(2),
   },
 
   buttonProgress: {
@@ -173,7 +193,7 @@ const CampaignModal = ({
         .catch((error) => {
           console.error("Error retrieving tags:", error);
         });
-        
+
       if (!campaignId) return;
 
       api.get(`/campaigns/${campaignId}`).then(({ data }) => {
@@ -345,16 +365,40 @@ const CampaignModal = ({
         maxWidth="md"
         scroll="paper"
       >
-        <DialogTitle id="form-dialog-title">
-          {campaignEditable ? (
-            <>
-              {campaignId
-                ? `${i18n.t("campaigns.dialog.update")}`
-                : `${i18n.t("campaigns.dialog.new")}`}
-            </>
-          ) : (
-            <>{`${i18n.t("campaigns.dialog.readonly")}`}</>
-          )}
+        <DialogTitle
+          id="form-dialog-title"
+          style={{
+            color: "#fff",
+            backgroundColor: "#0C2C54",
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            position: 'relative'
+          }}
+        >
+          <span>
+            {campaignEditable ? (
+              <>
+                {campaignId
+                  ? `${i18n.t("campaigns.dialog.update")}`
+                  : `${i18n.t("campaigns.dialog.new")}`}
+              </>
+            ) : (
+              <>{`${i18n.t("campaigns.dialog.readonly")}`}</>
+            )}
+          </span>
+          <IconButton
+            onClick={handleClose}
+            style={{
+              color: "white",
+              position: "absolute",
+              right: "10px",
+              top: '50%',
+              transform: 'translateY(-50%)'
+            }}
+          >
+            x
+          </IconButton>
         </DialogTitle>
         <div style={{ display: "none" }}>
           <input
@@ -537,7 +581,7 @@ const CampaignModal = ({
                     />
                   </Grid>
                   <Grid xs={12} md={4} item>
-                  <FormControl
+                    <FormControl
                       variant="outlined"
                       margin="dense"
                       className={classes.FormControl}
@@ -565,9 +609,8 @@ const CampaignModal = ({
                   <Grid xs={12} item>
                     <Tabs
                       value={messageTab}
-                      indicatorColor="primary"
-                      textColor="primary"
                       className={classes.tabmsg}
+                      indicatorColor="white"
                       onChange={(e, v) => setMessageTab(v)}
                       variant="fullWidth"
                       centered
@@ -703,7 +746,7 @@ const CampaignModal = ({
                   )}
                 </Grid>
               </DialogContent>
-              <DialogActions>
+              <DialogActions className={classes.dialogActions}>
                 {campaign.status === "CANCELADA" && (
                   <Button
                     color="primary"
@@ -728,18 +771,19 @@ const CampaignModal = ({
                     onClick={() => attachmentFile.current.click()}
                     disabled={isSubmitting}
                     variant="outlined"
+                    className={classes.btnWrapper2}
                   >
                     {i18n.t("campaigns.dialog.buttons.attach")}
                   </Button>
                 )}
-                <Button
+                {/* <Button
                   onClick={handleClose}
                   color="secondary"
                   disabled={isSubmitting}
                   variant="outlined"
                 >
                   {i18n.t("campaigns.dialog.buttons.close")}
-                </Button>
+                </Button> */}
                 {(campaignEditable || campaign.status === "CANCELADA") && (
                   <Button
                     type="submit"
