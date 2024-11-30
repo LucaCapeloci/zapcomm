@@ -18,6 +18,8 @@ import api from "../../services/api";
 import ButtonWithSpinner from "../ButtonWithSpinner";
 import toastError from "../../errors/toastError";
 
+import kanbanAutomation from "../../pages/Kanban/automation";
+
 const filterOptions = createFilterOptions({
 	trim: true,
 });
@@ -65,11 +67,16 @@ const TransferTicketModal = ({ modalOpen, onClose, ticketid }) => {
 		if (!ticketid || !selectedUser) return;
 		setLoading(true);
 		try {
+			const status = "open";
 			await api.put(`/tickets/${ticketid}`, {
 				userId: selectedUser.id,
 				queueId: null,
-				status: "open",
+				status: status,
 			});
+
+			// Kanban automation
+			kanbanAutomation.automaticCardMove(ticketid, status);
+
 			setLoading(false);
 			history.push(`/tickets`);
 		} catch (err) {

@@ -25,6 +25,8 @@ import toastError from "../../errors/toastError";
 import useQueues from "../../hooks/useQueues";
 import { AuthContext } from "../../context/Auth/AuthContext";
 
+import kanbanAutomation from "../../pages/Kanban/automation";
+
 const useStyles = makeStyles((theme) => ({
   maxWidth: {
     width: "100%",
@@ -148,6 +150,9 @@ const TransferTicketModalCustom = ({ modalOpen, onClose, ticketid }) => {
         data.whatsappId = selectedWhatsapp
       }
       await api.put(`/tickets/${ticketid}`, data);
+
+      // Kanban automation
+			kanbanAutomation.automaticCardMove(ticketid, data.status);
 
       history.push(`/tickets`);
     } catch (err) {

@@ -7,6 +7,9 @@ import { toast } from "react-toastify";
 import { i18n } from "../../translate/i18n";
 import { useHistory } from 'react-router-dom';
 
+import { defaultTags } from "../Kanban/config";
+import kanbanAutomation from "../Kanban/automation";
+
 const useStyles = makeStyles(theme => ({
   root: {
     display: "flex",
@@ -36,7 +39,14 @@ const Kanban = () => {
   const fetchTags = async () => {
     try {
       const response = await api.get("/tags/kanban");
-      const fetchedTags = response.data.lista || []; 
+      const fetchedTags = response.data.lista || [];
+      
+      // Kanban automation
+      if (await kanbanAutomation.needsDefaultTags()) {
+        toast.warn("Tags padrões do Kanban não encontradas!");
+        kanbanAutomation.createDefaultTags(user.companyId);
+        toast.success("Tags padrões do Kanban criadas com Sucesso!");
+      }
 
       setTags(fetchedTags);
 
@@ -84,7 +94,7 @@ const Kanban = () => {
     const lanes = [
       {
         id: "lane0",
-        title: i18n.t("Em aberto"),
+        title: i18n.t("Aguardando"),
         label: "0",
         cards: filteredTickets.map(ticket => ({
           id: ticket.id.toString(),
@@ -109,6 +119,7 @@ const Kanban = () => {
           draggable: true,
           href: "/tickets/" + ticket.uuid,
         })),
+        style: { backgroundColor: "#d6d6d6", color: "white" }
       },
       ...tags.map(tag => {
         const filteredTickets = tickets.filter(ticket => {
