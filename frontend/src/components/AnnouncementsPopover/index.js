@@ -4,6 +4,7 @@ import toastError from "../../errors/toastError";
 import Popover from "@material-ui/core/Popover";
 import AnnouncementIcon from "@material-ui/icons/Announcement";
 import Notifications from "@material-ui/icons/Notifications"
+import NotificationsOutlinedIcon from '@material-ui/icons/NotificationsOutlined';
 
 import {
   Avatar,
@@ -248,14 +249,14 @@ export default function AnnouncementsPopover() {
         variant="contained"
         aria-describedby={id}
         onClick={handleClick}
-        style={{ color: "white" }}
+        style={{ color: "#333", marginRight: 80}}
       >
         <Badge
           color="secondary"
           variant="dot"
           invisible={invisible || announcements.length < 1}
         >
-          <Notifications />
+          <NotificationsOutlinedIcon />
         </Badge>
       </IconButton>
       <Popover

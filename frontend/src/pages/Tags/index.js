@@ -218,42 +218,50 @@ return (
       />
       <MainHeader>
         <Title>{i18n.t("tags.title")}</Title>
-        <MainHeaderButtonsWrapper>
-          <TextField
-            placeholder={i18n.t("contacts.searchPlaceholder")}
-            type="search"
-            value={searchParam}
-            onChange={handleSearch}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon style={{ color: "gray" }} />
-                </InputAdornment>
-              ),
-            }}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOpenTagModal}
-          >
-            {i18n.t("tags.buttons.add")}
-          </Button>		  
-        </MainHeaderButtonsWrapper>
       </MainHeader>
+      
+
       <Paper
         className={classes.mainPaper}
         variant="outlined"
         onScroll={handleScroll}
-      >
+      >     
+        
+          
+          <MainHeaderButtonsWrapper>
+            <TextField
+              placeholder={i18n.t("contacts.searchPlaceholder")}
+              type="search"
+              value={searchParam}
+              onChange={handleSearch}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon style={{ color: "gray" }} />
+                  </InputAdornment>
+                ),
+                disableUnderline: true, // Remove a linha inferior
+              }}
+              style={{padding: '0px 15px', borderRadius: '5px',border: "2px solid #e7e7e7"}}
+            />
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={handleOpenTagModal}
+              style={{ borderRadius: '10px'}}
+            >
+              {i18n.t("Adicionar")}
+            </Button>		  
+          </MainHeaderButtonsWrapper>
+  
         <Table size="small">
           <TableHead>
             <TableRow>
               <TableCell align="center">{i18n.t("tags.table.name")}</TableCell>
-              <TableCell align="center">
+              <TableCell align="center" >
                 {i18n.t("tags.table.tickets")}
               </TableCell>
-              <TableCell align="center">
+              <TableCell align="center" >
                 {i18n.t("tags.table.actions")}
               </TableCell>
             </TableRow>

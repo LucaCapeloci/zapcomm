@@ -107,12 +107,8 @@ export const ChatsUser = () => {
 
     return (
         <>
-            <Typography component="h2" variant="h6" color="primary" gutterBottom>
-                Total de Conversas por Usuários
-            </Typography>
 
             <Stack direction={'row'} spacing={2} alignItems={'center'} sx={{ my: 2, }} >
-
                 <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={brLocale}>
                     <DatePicker
                         value={initialDate}
@@ -128,14 +124,14 @@ export const ChatsUser = () => {
                         value={finalDate}
                         onChange={(newValue) => { setFinalDate(newValue) }}
                         label="Fim"
-                        renderInput={(params) => <TextField fullWidth {...params} sx={{ width: '20ch' }} />}
+                        renderInput={(params) => <TextField fullWidth {...params} sx={{ width: '10ch' }} />}
                     />
                 </LocalizationProvider>
 
-                <Button className="buttonHover" onClick={handleGetTicketsInformation} variant='contained'>Filtrar</Button>
+            <Button style={{backgroundColor: "#0C2454"}} onClick={handleGetTicketsInformation} variant='contained' >Filtrar</Button>
 
             </Stack>
-            <Bar options={options} data={dataCharts} style={{ maxWidth: '100%', maxHeight: '280px', }} />
+            <Bar options={options} data={dataCharts} style={{ maxWidth: '80%', maxHeight: '280px', }} />
         </>
     );
 }

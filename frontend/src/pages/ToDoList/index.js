@@ -15,7 +15,10 @@ const useStyles = makeStyles({
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
-    margin: '2rem'
+    marginTop: '100px',
+    margin: '2rem',
+    borderRadius: '10px',
+    border: "20px",
   },
   inputContainer: {
     display: 'flex',
@@ -30,13 +33,15 @@ const useStyles = makeStyles({
     width: '100%',
     height: '100%',
     marginTop: '1rem',
-    backgroundColor: '#f5f5f5',
-    borderRadius: '5px',
+    backgroundColor: '#fff',
+    color: "black",
+    borderRadius: '10px',
+    border: '1px solid #ccc'
   },
   list: {
     marginBottom: '5px'
   }
-});
+});  
 
 const ToDoList = () => {
   const classes = useStyles();
@@ -62,21 +67,18 @@ const ToDoList = () => {
 
   const handleAddTask = () => {
     if (!task.trim()) {
-      // Impede que o usuário crie uma tarefa sem texto
       return;
     }
 
     const now = new Date();
     if (editIndex >= 0) {
-      // Editar tarefa existente
       const newTasks = [...tasks];
-      newTasks[editIndex] = {text: task, updatedAt: now, createdAt: newTasks[editIndex].createdAt};
+      newTasks[editIndex] = { text: task, updatedAt: now, createdAt: newTasks[editIndex].createdAt };
       setTasks(newTasks);
       setTask('');
       setEditIndex(-1);
     } else {
-      // Adicionar nova tarefa
-      setTasks([...tasks, {text: task, createdAt: now, updatedAt: now}]);
+      setTasks([...tasks, { text: task, createdAt: now, updatedAt: now }]);
       setTask('');
     }
   };
@@ -102,7 +104,7 @@ const ToDoList = () => {
           onChange={handleTaskChange}
           variant="outlined"
         />
-        <Button variant="contained" color="primary" onClick={handleAddTask}>
+        <Button variant="contained" color="secondary" onClick={handleAddTask}>
           {editIndex >= 0 ? 'Salvar' : 'Adicionar'}
         </Button>
       </div>
@@ -126,6 +128,5 @@ const ToDoList = () => {
     </div>
   );
 };
-
 
 export default ToDoList;

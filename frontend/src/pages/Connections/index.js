@@ -69,6 +69,17 @@ const useStyles = makeStyles(theme => ({
 	buttonProgress: {
 		color: green[500],
 	},
+	customButton: { 
+		color:"black",
+		borderRadius: '10px', 
+		[theme.breakpoints.down('sm')]: {
+			justifyContent: "center",
+			alignItems: "center",
+		},
+	},
+	customText: {
+		fontWeight: 'bold !important',
+	},
 }));
 
 const CustomToolTip = ({ title, content, children }) => {
@@ -315,23 +326,26 @@ const Connections = () => {
 			/>
 			<MainHeader>
 				<Title>{i18n.t("connections.title")}</Title>
+			</MainHeader>
+			<Paper className={classes.mainPaper} variant="outlined">
 				<MainHeaderButtonsWrapper>
+					<div style={{display: "flex", alignItems: "flex-end", justifyContent: "flex-end"}}>
 					<Can
 						role={user.profile}
 						perform="connections-page:addConnection"
 						yes={() => (
 							<Button
 								variant="contained"
-								color="primary"
+								color="secondary"
 								onClick={handleOpenWhatsAppModal}
+								className={classes.customButton}
 							>
 								{i18n.t("connections.buttons.add")}
 							</Button>
 						)}
 					/>
+					</div>
 				</MainHeaderButtonsWrapper>
-			</MainHeader>
-			<Paper className={classes.mainPaper} variant="outlined">
 				<Table size="small">
 					<TableHead>
 						<TableRow>
@@ -345,12 +359,12 @@ const Connections = () => {
 								role={user.profile}
 								perform="connections-page:actionButtons"
 								yes={() => (
-									<TableCell align="center">
+									<TableCell align="center" > 
 										{i18n.t("connections.table.session")}
 									</TableCell>
 								)}
 							/>
-							<TableCell align="center">
+							<TableCell align="center" >
 								{i18n.t("connections.table.lastUpdate")}
 							</TableCell>
 							<TableCell align="center">
@@ -360,7 +374,7 @@ const Connections = () => {
 								role={user.profile}
 								perform="connections-page:editOrDeleteConnection"
 								yes={() => (
-									<TableCell align="center">
+									<TableCell align="center" >
 										{i18n.t("connections.table.actions")}
 									</TableCell>
 								)}

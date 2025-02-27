@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useReducer, useContext } from "react";
+import  React, { useState, useEffect, useReducer, useContext } from "react";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
 
@@ -255,9 +255,18 @@ const Announcements = () => {
           <Grid xs={12} sm={8} item>
             <Title>{i18n.t("announcements.title")} ({announcements.length})</Title>
           </Grid>
-          <Grid xs={12} sm={4} item>
-            <Grid spacing={2} container>
-              <Grid xs={6} sm={6} item>
+        </Grid>
+      </MainHeader>
+      <Paper
+        className={classes.mainPaper}
+        variant="outlined"
+        onScroll={handleScroll}
+        style={{display: "flex", alignItems: "center", flexDirection: "column", gap: "30px"}}
+      >
+
+      <Grid>
+            <Grid spacing={2} container alignItems="center" justifyContent="center" style={{marginTop: "10px"}}>
+              <Grid xs={8} sm={8} item style={{ marginBottom: 0}}>
                 <TextField
                   fullWidth
                   placeholder={i18n.t("announcements.searchPlaceholder")}
@@ -270,28 +279,24 @@ const Announcements = () => {
                         <SearchIcon style={{ color: "gray" }} />
                       </InputAdornment>
                     ),
+                    disableUnderline: true, // Remove a linha inferior
                   }}
+                  style={{padding: '0px 15px', borderRadius: '5px',border: "2px solid #e7e7e7"}}
                 />
               </Grid>
-              <Grid xs={6} sm={6} item>
+              <Grid xs={4} sm={4} item>
                 <Button
                   fullWidth
                   variant="contained"
                   onClick={handleOpenAnnouncementModal}
-                  color="primary"
+                  color="secondary"
+                  style={{ borderRadius: '10px'}}
                 >
-                  {i18n.t("announcements.buttons.add")}
+                  {i18n.t("Adicionar")}
                 </Button>
               </Grid>
             </Grid>
           </Grid>
-        </Grid>
-      </MainHeader>
-      <Paper
-        className={classes.mainPaper}
-        variant="outlined"
-        onScroll={handleScroll}
-      >
         <Table size="small">
           <TableHead>
             <TableRow>

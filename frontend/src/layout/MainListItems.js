@@ -45,11 +45,13 @@ import { AllInclusive, AttachFile, BlurCircular, DeviceHubOutlined, Schedule } f
 import usePlans from "../hooks/usePlans";
 import Typography from "@material-ui/core/Typography";
 import useVersion from "../hooks/useVersion";
+import { useLocation } from 'react-router-dom';
+import PersonPinOutlinedIcon from '@material-ui/icons/PersonPinOutlined';
 
 const useStyles = makeStyles((theme) => ({
   ListSubheader: {
     height: 26,
-    marginTop: "-15px",
+    marginTop: "-20px",
     marginBottom: "-10px",
   },
 }));
@@ -57,6 +59,8 @@ const useStyles = makeStyles((theme) => ({
 
 function ListItemLink(props) {
   const { icon, primary, to, className } = props;
+  const location = useLocation();
+  const isActive = location.pathname === to;
 
   const renderLink = React.useMemo(
     () =>
@@ -66,11 +70,52 @@ function ListItemLink(props) {
     [to]
   );
 
+  const activeStyle = {
+    color: '#369FFF',
+  };
+
+  const listItemStyle = {
+    height: '29px', 
+    marginTop: "10px",
+    textAlign: 'left',
+    gap: '31px',
+    fontFamily: 'Manrope',
+  };
+
+  const listItemIconStyle = {
+    minWidth: '30px', 
+    fontSize: '8px', 
+    color: "#555",
+  };
+
+  const listItemTextStyle = {
+    fontSize: '8px',
+    color: "#555",
+    '&:hover': {
+      backgroundColor: 'inherit', 
+      color: 'black', 
+    },
+  };
+
+  
+
   return (
     <li>
-      <ListItem button dense component={renderLink} className={className}>
-        {icon ? <ListItemIcon>{icon}</ListItemIcon> : null}
-        <ListItemText primary={primary} />
+      <ListItem
+        dense
+        component={renderLink}
+        className={className}
+        style={{ ...listItemStyle, ...(isActive ? activeStyle : {}) }}
+      >
+        {icon ? (
+          <ListItemIcon style={{ ...listItemIconStyle, ...(isActive ? activeStyle : {}) }}>
+            {icon}
+          </ListItemIcon>
+        ) : null}
+        <ListItemText
+          primary={primary}
+          style={{ ...listItemTextStyle, ...(isActive ? activeStyle : {}) }}
+        />
       </ListItem>
     </li>
   );
@@ -140,6 +185,7 @@ const MainListItems = (props) => {
   const [connectionWarning, setConnectionWarning] = useState(false);
   const [openCampaignSubmenu, setOpenCampaignSubmenu] = useState(false);
   const [showCampaigns, setShowCampaigns] = useState(false);
+  const [openAdminSubmenu, setOpenAdminSubmenu] = useState(false);
   const [showKanban, setShowKanban] = useState(false);
   const [showOpenAi, setShowOpenAi] = useState(false);
   const [showIntegrations, setShowIntegrations] = useState(false); const history = useHistory();
@@ -283,8 +329,8 @@ const MainListItems = (props) => {
   };
 
   return (
-    <div onClick={drawerClose}>
-      <Can
+    <div> 
+      <Can //usado para verificar a permissão do usuário 
         role={user.profile}
         perform="dashboard:view"
         yes={() => (
@@ -298,7 +344,7 @@ const MainListItems = (props) => {
 
       <ListItemLink
         to="/tickets"
-        primary={i18n.t("mainDrawer.listItems.tickets")}
+        primary={i18n.t("Chamados")}
         icon={<WhatsAppIcon />}
       />
 	  
@@ -355,6 +401,7 @@ const MainListItems = (props) => {
         to="/helps"
         primary={i18n.t("mainDrawer.listItems.helps")}
         icon={<HelpOutlineIcon />}
+        style={{ marginBottom: "20px" }}
       />
 
       <Can
@@ -362,27 +409,24 @@ const MainListItems = (props) => {
         perform="drawer-admin-items:view"
         yes={() => (
           <>
+            <ListItem button onClick={() => setOpenAdminSubmenu((prev) => !prev)} style={{  color: "#555", fontSize: "8px" }}>
+              <ListItemIcon style={{  color: "#555", fontSize: "8px" }}>
+                <PersonPinOutlinedIcon />
+              </ListItemIcon>
+              <ListItemText primary="Administração" />
+              <ExpandMoreIcon />
+            </ListItem>
+
+            <Collapse in={openAdminSubmenu} timeout="auto" unmountOnExit>
             <Divider />
-            <ListSubheader
-              hidden={collapsed}
-              style={{
-                position: "relative",
-                fontSize: "17px",
-                textAlign: "left",
-                paddingLeft: 20
-              }}
-              inset
-              color="inherit">
-              {i18n.t("mainDrawer.listItems.administration")}
-            </ListSubheader>
-			
-            {showCampaigns && (
+              <List component="div" disablePadding>
+              {showCampaigns && (
               <>
                 <ListItem
-                  button
                   onClick={() => setOpenCampaignSubmenu((prev) => !prev)}
+                  style={{  color: "#555", fontSize: "8px" }}
                 >
-                  <ListItemIcon>
+                  <ListItemIcon style={{  color: "#555", fontSize: "8px" }}>
                     <EventAvailableIcon />
                   </ListItemIcon>
                   <ListItemText
@@ -484,11 +528,6 @@ const MainListItems = (props) => {
                 />
               </>
             )}
-            <ListItemLink
-              to="/financeiro"
-              primary={i18n.t("mainDrawer.listItems.financeiro")}
-              icon={<LocalAtmIcon />}
-            />
 
             <ListItemLink
               to="/settings"
@@ -497,6 +536,10 @@ const MainListItems = (props) => {
             />
 			
 			
+              </List>
+            </Collapse>
+                  
+          
             {!collapsed && <React.Fragment>
               <Divider />
               {/* 
@@ -505,7 +548,7 @@ const MainListItems = (props) => {
                 <img style={{ width: "100%", padding: "10px" }} src={logo} alt="image" />            
               </Hidden> 
               */}
-              <Typography style={{ fontSize: "12px", padding: "10px", textAlign: "right", fontWeight: "bold" }}>
+              <Typography style={{ fontSize: "10px", padding: "10px", textAlign: "right", fontWeight: "bold" }}>
                 {`6.0.0`}
 
               </Typography>

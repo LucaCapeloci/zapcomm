@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useReducer, useCallback, useContext } from "react";
 import { toast } from "react-toastify";
 import { useHistory } from "react-router-dom";
@@ -96,6 +97,8 @@ const useStyles = makeStyles((theme) => ({
   mainPaper: {
     flex: 1,
     padding: theme.spacing(1),
+    borderRadius: 10,
+    boxShadow: '0px 15px 30px rgba(0, 0, 0, 0.1)',
     overflowY: "scroll",
     ...theme.scrollbarStyles,
   },
@@ -259,9 +262,12 @@ const Schedules = () => {
         contactId={contactId}
         cleanContact={cleanContact}
       />
+     
       <MainHeader>
-        <Title>{i18n.t("schedules.title")} ({schedules.length})</Title>
-        <MainHeaderButtonsWrapper>
+         <Title>{i18n.t("schedules.title")} ({schedules.length})</Title>
+      </MainHeader>
+      <Paper className={classes.mainPaper} variant="outlined" onScroll={handleScroll}>
+      <MainHeaderButtonsWrapper>
           <TextField
             placeholder={i18n.t("contacts.searchPlaceholder")}
             type="search"
@@ -270,21 +276,22 @@ const Schedules = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIcon style={{ color: "gray" }} />
+                  <SearchIcon style={{ color: "grey" }} />
                 </InputAdornment>
               ),
+              disableUnderline: true, // Remove a linha inferior
             }}
+            style={{padding: '0px 15px', borderRadius: '5px',border: "2px solid #e7e7e7"}}
           />
           <Button
+            className={classes.addButton}
             variant="contained"
-            color="primary"
+            color="secondary"
             onClick={handleOpenScheduleModal}
           >
             {i18n.t("schedules.buttons.add")}
           </Button>
         </MainHeaderButtonsWrapper>
-      </MainHeader>
-      <Paper className={classes.mainPaper} variant="outlined" onScroll={handleScroll}>
         <Calendar
           messages={defaultMessages}
           formats={{

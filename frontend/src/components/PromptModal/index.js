@@ -328,10 +328,11 @@ const PromptModal = ({ open, onClose, promptId }) => {
                                     />
                                 </div>
                             </DialogContent>
-                            <DialogActions>
+                            <DialogActions  style={{alignItems: "center", justifyContent: "center"}}>
                                 <Button
                                     onClick={handleClose}
-                                    color="secondary"
+                                    color="#333"
+                                    style={{border: "1px solid #333", borderRadius: "20px"}}
                                     disabled={isSubmitting}
                                     variant="outlined"
                                 >
@@ -339,7 +340,8 @@ const PromptModal = ({ open, onClose, promptId }) => {
                                 </Button>
                                 <Button
                                     type="submit"
-                                    color="primary"
+                                    color="secondary"
+                                    style={{ borderRadius: "20px"}}
                                     disabled={isSubmitting}
                                     variant="contained"
                                     className={classes.btnWrapper}
