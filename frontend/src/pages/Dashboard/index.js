@@ -28,6 +28,8 @@ import SendIcon from '@material-ui/icons/Send';
 import MessageIcon from '@material-ui/icons/Message';
 import AccessAlarmIcon from '@material-ui/icons/AccessAlarm';
 import TimerIcon from '@material-ui/icons/Timer';
+import HeadsetMicOutlinedIcon from '@material-ui/icons/HeadsetMicOutlined';
+import LibraryAddCheckOutlinedIcon from '@material-ui/icons/LibraryAddCheckOutlined';
 
 import { makeStyles } from "@material-ui/core/styles";
 import { grey, blue } from "@material-ui/core/colors";
@@ -57,9 +59,14 @@ import { ChartsDate } from "./ChartsDate";
 const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(1),
-    paddingBottom: theme.padding,
+    paddingBottom: theme.spacing(4),
     paddingLeft: theme.spacing(1),
     paddingRight: theme.spacing(2),
+  },
+  customFont: {
+    fontFamily: "'Inter Tight', sans-serif", // Definindo a fonte
+    fontWeight: 500,  // Caso queira ajustar o peso da fonte
+    color: theme.palette.text.primary,  // Cor da fonte
   },
   fixedHeightPaper: {
     padding: theme.spacing(2),
@@ -99,17 +106,6 @@ const useStyles = makeStyles((theme) => ({
     height: "calc(100vh - 64px)",
     border: "none",
   },
-  container: {
-    paddingTop: theme.spacing(4),
-    paddingBottom: theme.spacing(4),
-  },
-  fixedHeightPaper: {
-    padding: theme.spacing(2),
-    display: "flex",
-    overflow: "auto",
-    flexDirection: "column",
-    height: 240,
-  },
   customFixedHeightPaper: {
     padding: theme.spacing(2),
     display: "flex",
@@ -130,10 +126,8 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     flexDirection: "column",
     height: "100%",
-    //backgroundColor: "palette",
-    //backgroundColor: theme.palette.primary.main,
-    backgroundColor: theme.palette.type === 'dark' ? theme.palette.boxticket.main : theme.palette.primary.main,
-    color: "#eee",
+    backgroundColor: "#ffffff",  // Cor de fundo branca
+    color: theme.palette.type === 'dark' ? "#eee" : "#000",  // Ajuste da cor do texto
   },
   card2: {
     padding: theme.spacing(2),
@@ -141,10 +135,8 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     flexDirection: "column",
     height: "100%",
-    //backgroundColor: "palette",
-    //backgroundColor: theme.palette.primary.main,
-    backgroundColor: theme.palette.type === 'dark' ? theme.palette.boxticket.main : theme.palette.primary.main,
-    color: "#eee",
+    backgroundColor: "#ffffff",  // Cor de fundo branca
+    color: theme.palette.type === 'dark' ? "#eee" : "#000",  // Ajuste da cor do texto
   },
   card3: {
     padding: theme.spacing(2),
@@ -152,9 +144,8 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     flexDirection: "column",
     height: "100%",
-  //backgroundColor: theme.palette.primary.main,
-    backgroundColor: theme.palette.type === 'dark' ? theme.palette.boxticket.main : theme.palette.primary.main,
-    color: "#eee",
+    backgroundColor: "#ffffff",  // Cor de fundo branca
+    color: theme.palette.type === 'dark' ? "#eee" : "#000",  // Ajuste da cor do texto
   },
   card4: {
     padding: theme.spacing(2),
@@ -162,9 +153,8 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     flexDirection: "column",
     height: "100%",
-    //backgroundColor: theme.palette.primary.main,
-    backgroundColor: theme.palette.type === 'dark' ? theme.palette.boxticket.main : theme.palette.primary.main,
-    color: "#eee",
+    backgroundColor: "#ffffff",  // Cor de fundo branca
+    color: theme.palette.type === 'dark' ? "#eee" : "#000",  // Ajuste da cor do texto
   },
   card5: {
     padding: theme.spacing(2),
@@ -172,9 +162,8 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     flexDirection: "column",
     height: "100%",
-    //backgroundColor: theme.palette.primary.main,
-    backgroundColor: theme.palette.type === 'dark' ? theme.palette.boxticket.main : theme.palette.primary.main,
-    color: "#eee",
+    backgroundColor: "#ffffff",  // Cor de fundo branca
+    color: theme.palette.type === 'dark' ? "#eee" : "#000",  // Ajuste da cor do texto
   },
   card6: {
     padding: theme.spacing(2),
@@ -182,8 +171,7 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     flexDirection: "column",
     height: "100%",
-    //backgroundColor: theme.palette.primary.main,
-    backgroundColor: theme.palette.type === 'dark' ? theme.palette.boxticket.main : theme.palette.primary.main,
+    backgroundColor: theme.palette.type === 'dark' ? theme.palette.boxticket.main : theme.palette.primary.main, // Cor dependendo do tema
     color: "#eee",
   },
   card7: {
@@ -192,9 +180,8 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     flexDirection: "column",
     height: "100%",
-    //backgroundColor: theme.palette.primary.main,
-    backgroundColor: theme.palette.type === 'dark' ? theme.palette.boxticket.main : theme.palette.primary.main,
-    color: "#eee",
+    backgroundColor: "#ffffff",  // Cor de fundo branca
+    color: theme.palette.type === 'dark' ? "#eee" : "#000",  // Ajuste da cor do texto
   },
   card8: {
     padding: theme.spacing(2),
@@ -202,9 +189,8 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     flexDirection: "column",
     height: "100%",
-    //backgroundColor: theme.palette.primary.main,
-    backgroundColor: theme.palette.type === 'dark' ? theme.palette.boxticket.main : theme.palette.primary.main,
-    color: "#eee",
+    backgroundColor: "#ffffff",  // Cor de fundo branca
+    color: theme.palette.type === 'dark' ? "#eee" : "#000",  // Ajuste da cor do texto
   },
   card9: {
     padding: theme.spacing(2),
@@ -212,18 +198,30 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     flexDirection: "column",
     height: "100%",
-    //backgroundColor: theme.palette.primary.main,
-    backgroundColor: theme.palette.type === 'dark' ? theme.palette.boxticket.main : theme.palette.primary.main,
-    color: "#eee",
+    backgroundColor: "#ffffff",  // Cor de fundo branca
+    color: theme.palette.type === 'dark' ? "#eee" : "#000",  // Ajuste da cor do texto
   },
   fixedHeightPaper2: {
     padding: theme.spacing(2),
     display: "flex",
     overflow: "auto",
     flexDirection: "column",
+    height: "100%",
+    justifyContent: "space-between",
+  },
+  divBody: {
+    flex: '1',
+    padding: theme.spacing(1),
+    height: 'calc(100% - 98px)',
+    background: "#FFFFFF"
+  },
+  titleContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'flex-start', // Alinha os itens à esquerda
+    marginBottom: '1rem', // Espaçamento abaixo do contêiner
   },
 }));
-
 const Dashboard = () => {
   const classes = useStyles();
   const [counters, setCounters] = useState({});
@@ -260,8 +258,8 @@ const Dashboard = () => {
     }, 1000);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-  
-    async function handleChangePeriod(value) {
+
+  async function handleChangePeriod(value) {
     setPeriod(value);
   }
 
@@ -336,8 +334,8 @@ const Dashboard = () => {
     count = userOnline === 0 ? 0 : userOnline;
     return count;
   };
-  
-    const GetContacts = (all) => {
+
+  const GetContacts = (all) => {
     let props = {};
     if (all) {
       props = {};
@@ -345,8 +343,8 @@ const Dashboard = () => {
     const { count } = useContacts(props);
     return count;
   };
-  
-    function renderFilters() {
+
+  function renderFilters() {
     if (filterType === 1) {
       return (
         <>
@@ -403,10 +401,23 @@ const Dashboard = () => {
   }
 
   return (
-    <div>
-      <Container maxWidth="lg" className={classes.container}>
+    <div className={classes.divBody}>
+
+      <div className={classes.titleContainer}>
+        <h1 style={{ margin: '0' }}>Dashboard</h1> {/*Titulo tarefas*/}
+        <Typography
+          className={classes.info}
+          component="subtitle1"
+          variant="body1"
+          style={{ fontFamily: 'Inter Regular, sans-serif', color: '#828282' }}
+        >
+          {'Visualize seus chamados, tempo de espera médio e gráfico acerca dos chamados no mês e na semana'}
+        </Typography>
+      </div>
+
+      <Container maxWidth="95%" className={classes.container}>
         <Grid container spacing={3} justifyContent="flex-end">
-		
+
 
           {/* EM ATENDIMENTO */}
           <Grid item xs={12} sm={6} md={4}>
@@ -421,29 +432,38 @@ const Dashboard = () => {
                     component="h3"
                     variant="h6"
                     paragraph
+                    style={{ fontFamily: 'Inter Tight, sans-serif', fontSize: "18px", color: 'black' }} // Aplicando a nova fonte
                   >
-                    Em Conversa
+                    Chamados Pendentes
                   </Typography>
                   <Grid item>
-                    <Typography
-                      component="h1"
-                      variant="h4"
-                    >
-                      {counters.supportHappening}
-                    </Typography>
+                    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '8vh' }}>
+                      {/* Outros componentes do conteúdo aqui */}
+
+                      <div style={{ marginTop: 'auto' }}> {/* Isso empurra o Typography para o fundo */}
+                        <Typography
+                          component="h1"
+                          variant="body2" // Escolha uma variante menor
+                          style={{ fontFamily: 'Inter Tight, sans-serif', color: 'black' }} // Aplicando a nova fonte
+                        >
+                          {`${counters.supportHappening} Chamados Pendentes`}
+                        </Typography>
+                      </div>
+                    </div>
                   </Grid>
                 </Grid>
                 <Grid item xs={2}>
-                  <CallIcon
+                  <HeadsetMicOutlinedIcon
                     style={{
                       fontSize: 100,
-                      color: "#FFFFFF",
+                      color: "#0C2454",
                     }}
                   />
                 </Grid>
               </Grid>
             </Paper>
           </Grid>
+
 
           {/* AGUARDANDO */}
           <Grid item xs={12} sm={6} md={4}>
@@ -458,23 +478,32 @@ const Dashboard = () => {
                     component="h3"
                     variant="h6"
                     paragraph
+                    className={classes.customFont}  // Aplicando a classe customizada
+                    style={{ fontFamily: 'Inter Tight, sans-serif', fontSize: "18px", color: 'black' }} // Aplicando a nova fonte
                   >
-                    Aguardando
+                    Chamados em Andamento
                   </Typography>
                   <Grid item>
-                    <Typography
-                      component="h1"
-                      variant="h4"
-                    >
-                      {counters.supportPending}
-                    </Typography>
+                    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '8vh' }}>
+                      {/* Outros componentes do conteúdo aqui */}
+
+                      <div style={{ marginTop: 'auto' }}> {/* Isso empurra o Typography para o fundo */}
+                        <Typography
+                          component="h1"
+                          variant="body2" // Escolha uma variante menor
+                          style={{ fontFamily: 'Inter Tight, sans-serif', color: 'black' }} // Aplicando a nova fonte
+                        >
+                          {`${counters.supportPending} Chamados em Andamento`}
+                        </Typography>
+                      </div>
+                    </div>
                   </Grid>
                 </Grid>
                 <Grid item xs={4}>
                   <HourglassEmptyIcon
                     style={{
                       fontSize: 100,
-                      color: "#FFFFFF",
+                      color: "#0C2454",
                     }}
                   />
                 </Grid>
@@ -483,7 +512,7 @@ const Dashboard = () => {
           </Grid>
 
           {/* ATENDENTES ATIVOS */}
-			  {/*<Grid item xs={12} sm={6} md={4}>
+          {/*<Grid item xs={12} sm={6} md={4}>
             <Paper
               className={classes.card6}
               style={{ overflow: "hidden" }}
@@ -522,7 +551,7 @@ const Dashboard = () => {
                 </Grid>
               </Grid>
             </Paper>
-</Grid>*/}
+          </Grid>*/}
 
           {/* FINALIZADOS */}
           <Grid item xs={12} sm={6} md={4}>
@@ -537,23 +566,32 @@ const Dashboard = () => {
                     component="h3"
                     variant="h6"
                     paragraph
+                    className={classes.customFont}  // Aplicando a classe customizada
+                    style={{ fontFamily: 'Inter Tight, sans-serif', fontSize: "18px", color: 'black' }} // Aplicando a nova fonte
                   >
-                    Finalizados
+                    Chamados Finalizados
                   </Typography>
                   <Grid item>
-                    <Typography
-                      component="h1"
-                      variant="h4"
-                    >
-                      {counters.supportFinished}
-                    </Typography>
+                    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '8vh' }}>
+                      {/* Outros componentes do conteúdo aqui */}
+
+                      <div style={{ marginTop: 'auto' }}> {/* Isso empurra o Typography para o fundo */}
+                        <Typography
+                          component="h1"
+                          variant="body2" // Escolha uma variante menor
+                          style={{ fontFamily: 'Inter Tight, sans-serif', color: 'black' }} // Aplicando a nova fonte
+                        >
+                          {`${counters.supportFinished} Chamados Finalizados`}
+                        </Typography>
+                      </div>
+                    </div>
                   </Grid>
                 </Grid>
                 <Grid item xs={4}>
-                  <CheckCircleIcon
+                  <LibraryAddCheckOutlinedIcon
                     style={{
                       fontSize: 100,
-                      color: "#FFFFFF",
+                      color: "#0C2454",
                     }}
                   />
                 </Grid>
@@ -574,23 +612,32 @@ const Dashboard = () => {
                     component="h3"
                     variant="h6"
                     paragraph
+                    className={classes.customFont}  // Aplicando a classe customizada
+                    style={{ fontFamily: 'Inter Tight, sans-serif', fontSize: '18px', color: 'black' }} // Aplicando a nova fonte
                   >
-                    Novos Contatos
+                    Novos Chamados
                   </Typography>
                   <Grid item>
-                    <Typography
-                      component="h1"
-                      variant="h4"
-                    >
-                      {GetContacts(true)}
-                    </Typography>
+                    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '8vh' }}>
+                      {/* Outros componentes do conteúdo aqui */}
+
+                      <div style={{ marginTop: 'auto' }}> {/* Isso empurra o Typography para o fundo */}
+                        <Typography
+                          component="h1"
+                          variant="body2" // Escolha uma variante menor
+                          style={{ fontFamily: 'Inter Tight, sans-serif', color: 'black' }} // Aplicando a nova fonte
+                        >
+                          {`${GetContacts(true)} Novos Chamados`}
+                        </Typography>
+                      </div>
+                    </div>
                   </Grid>
                 </Grid>
                 <Grid item xs={4}>
-                  <GroupAddIcon
+                  <GroupIcon
                     style={{
                       fontSize: 100,
-                      color: "#FFFFFF",
+                      color: "#0C2454",
                     }}
                   />
                 </Grid>
@@ -598,7 +645,7 @@ const Dashboard = () => {
             </Paper>
           </Grid>
 
-          
+
           {/* T.M. DE ATENDIMENTO */}
           <Grid item xs={12} sm={6} md={4}>
             <Paper
@@ -612,23 +659,32 @@ const Dashboard = () => {
                     component="h3"
                     variant="h6"
                     paragraph
+                    className={classes.customFont}  // Aplicando a classe customizada
+                    style={{ fontFamily: 'Inter Tight, sans-serif', fontSize: "18px", color: 'black' }} // Aplicando a nova fonte
                   >
-                    T.M. de Conversa
+                    T.M. de Atendimento
                   </Typography>
                   <Grid item>
-                    <Typography
-                      component="h1"
-                      variant="h4"
-                    >
-                      {formatTime(counters.avgSupportTime)}
-                    </Typography>
+                    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '8vh' }}>
+                      {/* Outros componentes do conteúdo aqui */}
+
+                      <div style={{ marginTop: 'auto' }}> {/* Isso empurra o Typography para o fundo */}
+                        <Typography
+                          component="h1"
+                          variant="body2" // Escolha uma variante menor
+                          style={{ fontFamily: 'Inter Tight, sans-serif', color: 'black' }} // Aplicando a nova fonte
+                        >
+                          {`${formatTime(counters.avgSupportTime)} `}
+                        </Typography>
+                      </div>
+                    </div>
                   </Grid>
                 </Grid>
                 <Grid item xs={4}>
                   <AccessAlarmIcon
                     style={{
                       fontSize: 100,
-                      color: "#FFFFFF",
+                      color: "#0C2454",
                     }}
                   />
                 </Grid>
@@ -649,84 +705,52 @@ const Dashboard = () => {
                     component="h3"
                     variant="h6"
                     paragraph
+                    className={classes.customFont}  // Aplicando a classe customizada
+                    style={{ fontFamily: 'Inter Tight, sans-serif', fontSize: "18px", color: 'black' }} // Aplicando a nova fonte
                   >
                     T.M. de Espera
                   </Typography>
                   <Grid item>
-                    <Typography
-                      component="h1"
-                      variant="h4"
-                    >
-                      {formatTime(counters.avgWaitTime)}
-                    </Typography>
+                    <div style={{ display: 'flex', flexDirection: 'column', minHeight: '8vh' }}>
+                      {/* Outros componentes do conteúdo aqui */}
+
+                      <div style={{ marginTop: 'auto' }}> {/* Isso empurra o Typography para o fundo */}
+                        <Typography
+                          component="h1"
+                          variant="body2" // Escolha uma variante menor
+                          style={{ fontFamily: 'Inter Tight, sans-serif', color: 'black' }} // Aplicando a nova fonte
+                        >
+                          {`${formatTime(counters.avgWaitTime)} `}
+                        </Typography>
+                      </div>
+                    </div>
                   </Grid>
                 </Grid>
                 <Grid item xs={4}>
                   <TimerIcon
                     style={{
                       fontSize: 100,
-                      color: "#FFFFFF",
+                      color: "#0C2454",
                     }}
                   />
                 </Grid>
               </Grid>
             </Paper>
           </Grid>
-		  
-		  {/* FILTROS */}
-          <Grid item xs={12} sm={6} md={4}>
-            <FormControl className={classes.selectContainer}>
-              <InputLabel id="period-selector-label">Tipo de Filtro</InputLabel>
-              <Select
-                labelId="period-selector-label"
-                value={filterType}
-                onChange={(e) => handleChangeFilterType(e.target.value)}
-              >
-                <MenuItem value={1}>Filtro por Data</MenuItem>
-                <MenuItem value={2}>Filtro por Período</MenuItem>
-              </Select>
-              <FormHelperText>Selecione o período desejado</FormHelperText>
-            </FormControl>
-          </Grid>
-
-          {renderFilters()}
-
-          {/* BOTAO FILTRAR */}
-          <Grid item xs={12} className={classes.alignRight}>
-            <ButtonWithSpinner
-              loading={loading}
-              onClick={() => fetchData()}
-              variant="contained"
-              color="primary"
-            >
-              Filtrar
-            </ButtonWithSpinner>
-          </Grid>
-
-          {/* USUARIOS ONLINE */}
-          <Grid item xs={12}>
-            {attendants.length ? (
-              <TableAttendantsStatus
-                attendants={attendants}
-                loading={loading}
-              />
-            ) : null}
-          </Grid>
 
           {/* TOTAL DE ATENDIMENTOS POR USUARIO */}
-          <Grid item xs={12}>
-            <Paper className={classes.fixedHeightPaper2}>
-              <ChatsUser />
-            </Paper>
-          </Grid>
-
-          {/* TOTAL DE ATENDIMENTOS */}
-          <Grid item xs={12}>
+          {/* TOTAL DE ATENDIMENTOS POR USUARIO */}
+          <Grid item xs={12} sm={8} md={8}>
             <Paper className={classes.fixedHeightPaper2}>
               <ChartsDate />
             </Paper>
           </Grid>
 
+          <Grid item xs={12} sm={4} md={4} className={classes.gridGraficoUser}>
+            <Paper className={classes.fixedHeightPaper2}>
+              <ChatsUser />
+            </Paper>
+          </Grid>
         </Grid>
       </Container >
     </div >

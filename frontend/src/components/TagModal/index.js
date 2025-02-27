@@ -31,8 +31,11 @@ import Checkbox from '@material-ui/core/Checkbox';
 const useStyles = makeStyles(theme => ({
 	root: {
 		display: "flex",
+		// padding: "1rem",
 		flexWrap: "wrap",
 	},
+
+
 	multFieldLine: {
 		display: "flex",
 		"& > *:not(:last-child)": {
@@ -40,8 +43,19 @@ const useStyles = makeStyles(theme => ({
 		},
 	},
 
+	titulo: {
+		color: "white",
+		backgroundColor: "#0c2c54",
+	},
+
 	btnWrapper: {
-		position: "relative",
+		borderRadius: "20px",
+		color: "#0c2c54",
+		backgroundColor: "#34d3a3",
+		marginRight: "37.5%",
+		"&:hover": {
+			backgroundColor: "#5cdbb5",
+		},
 	},
 
 	buttonProgress: {
@@ -80,7 +94,7 @@ const TagModal = ({ open, onClose, tagId, reload }) => {
 	};
 
 	const [tag, setTag] = useState(initialState);
-	const [ kanban, setKanban] = useState(0);
+	const [kanban, setKanban] = useState(0);
 
 	useEffect(() => {
 		try {
@@ -105,7 +119,7 @@ const TagModal = ({ open, onClose, tagId, reload }) => {
 	};
 
 	const handleKanbanChange = (e) => {
-		setKanban( e.target.checked ? 1 : 0);
+		setKanban(e.target.checked ? 1 : 0);
 	};
 
 	const handleSaveTag = async values => {
@@ -135,8 +149,11 @@ const TagModal = ({ open, onClose, tagId, reload }) => {
 				fullWidth
 				scroll="paper"
 			>
-				<DialogTitle id="form-dialog-title">
-					{(tagId ? `${i18n.t("tagModal.title.edit")}` : `${i18n.t("tagModal.title.add")}`)}
+				<DialogTitle className={classes.titulo}>
+					<div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+						<div>{(tagId ? `${i18n.t("tagModal.title.edit")}` : `${i18n.t("tagModal.title.add")}`)}</div>
+						<IconButton onClick={handleClose} style={{ color: "white" }}>x</IconButton>
+					</div>
 				</DialogTitle>
 				<Formik
 					initialValues={tag}
@@ -199,23 +216,23 @@ const TagModal = ({ open, onClose, tagId, reload }) => {
 									/>
 								</div>
 								{(user.profile === "admin" || user.profile === "supervisor") && (
-                                <>
-								<div className={classes.multFieldLine}>
-        							<FormControlLabel
-          								control={
-            								<Checkbox
-             									checked={kanban === 1}
-             									onChange={handleKanbanChange}
-              									value={kanban}
-              									color="primary"
-            								/>
-          								}
-          								label="Kanban"
-          								labelPlacement="start"
-        							/>
-      							</div>
-      							<br />
-                                </>
+									<>
+										<div className={classes.multFieldLine}>
+											<FormControlLabel
+												control={
+													<Checkbox
+														checked={kanban === 1}
+														onChange={handleKanbanChange}
+														value={kanban}
+														color="primary"
+													/>
+												}
+												label="Kanban"
+												labelPlacement="start"
+											/>
+										</div>
+										<br />
+									</>
 								)}
 								{colorPickerModalOpen && (
 									<div>
@@ -232,17 +249,16 @@ const TagModal = ({ open, onClose, tagId, reload }) => {
 								)}
 							</DialogContent>
 							<DialogActions>
-								<Button
+								{/* <Button
 									onClick={handleClose}
 									color="secondary"
 									disabled={isSubmitting}
-									variant="outlined"
 								>
 									{i18n.t("tagModal.buttons.cancel")}
-								</Button>
+								</Button> */}
 								<Button
 									type="submit"
-									color="primary"
+									//color="#145441"
 									disabled={isSubmitting}
 									variant="contained"
 									className={classes.btnWrapper}

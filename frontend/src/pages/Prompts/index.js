@@ -30,6 +30,8 @@ import { AuthContext } from "../../context/Auth/AuthContext";
 import usePlans from "../../hooks/usePlans";
 import { useHistory } from "react-router-dom/cjs/react-router-dom.min";
 import { SocketContext } from "../../context/Socket/SocketContext";
+import SearchIcon from "@material-ui/icons/Search";
+import InputBase from "@material-ui/core/InputBase";
 
 const useStyles = makeStyles((theme) => ({
   mainPaper: {
@@ -49,6 +51,58 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2), // Adicionando um espaçamento interno
     marginBottom: theme.spacing(2), // Adicionando margem inferior para separar do conteúdo abaixo
   },
+  divBody: {
+    flex: 1,
+    padding: theme.spacing(1),
+    height: `calc(100% - 48px)`,
+    overflowY: "hidden",
+    background: "#FFFFFF"
+  },
+  Botoes: {
+    borderRadius: "40px",
+    padding: "10px 32px",
+    justifyContent: "center",
+    alignItems: "center",
+    border: "1px solid var(--logo-bg, #0C2C54)",
+  },
+  Tabela: {
+    backgroundColor: "#FFFFFF",
+    fontFamily: 'Inter Tight, sans-serif',
+    color: 'black'
+  },
+  acoes: {
+    color: "#0C2C54",
+    "&:hover": {
+      color: "#3c5676",
+    },
+    width: "35px",
+    height: "30px",
+  },
+
+  serachInputWrapper: {
+    border: "solid 1px #828282",
+    flex: 1,
+    display: "flex",
+    borderRadius: 40,
+    padding: 4,
+    marginRight: theme.spacing(1),
+    width: '70%',
+    height: '48px',
+  },
+
+  searchIcon: {
+    color: "grey",
+    marginLeft: 6,
+    marginRight: 6,
+    alignSelf: "center",
+  },
+
+  searchInput: {
+    flex: 1,
+    border: "none",
+    borderRadius: 30,
+  },
+
 }));
 
 const reducer = (state, action) => {
@@ -97,6 +151,10 @@ const reducer = (state, action) => {
 const Prompts = () => {
   const classes = useStyles();
 
+  const handleSearch = (event) => {
+    setSearchParam(event.target.value.toLowerCase());
+  };
+
   const [prompts, dispatch] = useReducer(reducer, []);
   const [loading, setLoading] = useState(false);
 
@@ -107,6 +165,7 @@ const Prompts = () => {
   const { getPlanCompany } = usePlans();
   const history = useHistory();
   const companyId = user.companyId;
+  const [searchParam, setSearchParam] = useState("");
 
   const socketManager = useContext(SocketContext);
 
@@ -188,9 +247,16 @@ const Prompts = () => {
   };
 
   return (
-    <MainContainer>
-   
-
+    <div className={classes.divBody}>
+      <h1 style={{ margin: "0" }}><b>Prompts</b></h1>
+      <Typography
+        component="subtitle1"
+        variant="body1"
+        style={{ fontFamily: 'Inter Regular, sans-serif', color: '#828282' }} // Aplicando a nova fonte
+      >
+        {"Adicione, edite e exclua seus prompts com ChatGPT"}
+      </Typography>
+      {/* <MainContainer> */}
       <ConfirmationModal
         title={
           selectedPrompt &&
@@ -208,10 +274,52 @@ const Prompts = () => {
         onClose={handleClosePromptModal}
         promptId={selectedPrompt?.id}
       />
-      <MainHeader>
-        <Title>{i18n.t("prompts.title")}</Title>
+
+      {/* <MainHeader> */}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          width: "100%",
+          flexWrap: "nowrap",
+        }}
+      >
+        <div
+          style={{
+            flex: "1 1 auto",
+            display: "flex",
+            alignItems: "center",
+            maxWidth: "80%",
+          }}
+          className={classes.serachInputWrapper}>
+          <SearchIcon className={classes.searchIcon} />
+          <InputBase
+            className={classes.searchInput}
+            placeholder={i18n.t("Pesquisar...")}
+            type="search"
+            value={searchParam}
+            onChange={handleSearch}
+          />
+        </div>
+
+        <div
+          style={{
+            width: "1px",
+            height: "43px",
+            background: "#BDBDBD",
+          }}
+        ></div>
+
+        <div
+          style={{
+            flex: "0 0 auto",
+          }}
+        >
+
         <MainHeaderButtonsWrapper>
           <Button
+            className={classes.Botoes}
             variant="contained"
             color="primary"
             onClick={handleOpenPromptModal}
@@ -219,58 +327,77 @@ const Prompts = () => {
             {i18n.t("prompts.buttons.add")}
           </Button>
         </MainHeaderButtonsWrapper>
-      </MainHeader>
-      <Paper className={classes.mainPaper} variant="outlined">
+        </div>
+      </div>
+      {/* </MainHeader> */}
+
+      <Paper 
+      // className={classes.mainPaper}
+      >
+
         <Table size="small">
           <TableHead>
             <TableRow>
-              <TableCell align="left">
-                {i18n.t("prompts.table.name")}
+              <TableCell align="left" className={classes.Tabela}>
+                <b>{i18n.t("prompts.table.name")}</b>
               </TableCell>
-              <TableCell align="left">
-                {i18n.t("prompts.table.queue")}
+              <TableCell align="left" className={classes.Tabela}>
+                <b>{i18n.t("prompts.table.queue")}</b>
               </TableCell>
-              <TableCell align="left">
-                {i18n.t("prompts.table.max_tokens")}
+              <TableCell align="left" className={classes.Tabela}>
+                <b>{i18n.t("prompts.table.max_tokens")}</b>
               </TableCell>
-              <TableCell align="center">
-                {i18n.t("prompts.table.actions")}
+              <TableCell align="center" className={classes.Tabela}>
+                <b>{i18n.t("prompts.table.actions")}</b>
               </TableCell>
             </TableRow>
           </TableHead>
-          <TableBody>
+          {prompts.length > 0 ? (
             <>
-              {prompts.map((prompt) => (
-                <TableRow key={prompt.id}>
-                  <TableCell align="left">{prompt.name}</TableCell>
-                  <TableCell align="left">{prompt.queue.name}</TableCell>
-                  <TableCell align="left">{prompt.maxTokens}</TableCell>
-                  <TableCell align="center">
-                    <IconButton
-                      size="small"
-                      onClick={() => handleEditPrompt(prompt)}
-                    >
-                      <Edit />
-                    </IconButton>
+              <TableBody>
+                <>
+                  {prompts.map((prompt) => (
+                    <TableRow key={prompt.id}>
+                      <TableCell align="left">{prompt.name}</TableCell>
+                      <TableCell align="left">{prompt.queue.name}</TableCell>
+                      <TableCell align="left">{prompt.maxTokens}</TableCell>
+                      <TableCell align="center">
+                        <IconButton
+                          className={classes.acoes}
+                          onClick={() => handleEditPrompt(prompt)}
+                        >
+                          <Edit />
+                        </IconButton>
 
-                    <IconButton
-                      size="small"
-                      onClick={() => {
-                        setSelectedPrompt(prompt);
-                        setConfirmModalOpen(true);
-                      }}
-                    >
-                      <DeleteOutline />
-                    </IconButton>
-                  </TableCell>
-                </TableRow>
-              ))}
-              {loading && <TableRowSkeleton columns={4} />}
+                        <IconButton
+                          className={classes.acoes}
+                          onClick={() => {
+                            setSelectedPrompt(prompt);
+                            setConfirmModalOpen(true);
+                          }}
+                        >
+                          <DeleteOutline />
+                        </IconButton>
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                  {loading && <TableRowSkeleton columns={4} />}
+                </>
+              </TableBody>
             </>
-          </TableBody>
+          ) : (
+            <TableBody>
+              <TableRow>
+                <TableCell colSpan="4" align="center">
+                  Nenhum prompt a ser carregado no momento
+                </TableCell>
+              </TableRow>
+            </TableBody>
+          )}
         </Table>
       </Paper>
-    </MainContainer>
+      {/* </MainContainer> */}
+    </div>
   );
 };
 
