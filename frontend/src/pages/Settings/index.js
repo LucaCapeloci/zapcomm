@@ -23,6 +23,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(2),
     display: "flex",
     alignItems: "center",
+    borderRadius:'16px',
   },
 
   settingOption: {
@@ -94,10 +95,10 @@ const Settings = () => {
   return (
     <div className={classes.root}>
       <Container className={classes.container} maxWidth="sm">
-        <Typography variant="body2" gutterBottom>
+        <Typography variant="body2" gutterBottom style={{paddingLeft:"1500px"}}>
           {i18n.t("settings.title")}
         </Typography>
-        <Paper className={classes.paper}>
+        <Paper  className={classes.paper}>
           <Typography variant="body1">
             {i18n.t("settings.settings.userCreation.name")}
           </Typography>
